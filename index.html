@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>人生四大作品 · 趣味人格测试</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        :root {
+            --bg-body: #0b0614;
+            --text-main: #eee9ff;
+            --container-bg: #120a22;
+            --container-border: #2a1b47;
+            --title-grad-1: #d6c5ff;
+            --title-grad-2: #9f7cff;
+            --sub-color: #c8b8f2;
+            --sub-border: #3a2a5f;
+            --progress-bg: #24153f;
+            --progress-fill: #8b5cf6;
+            --counter-color: #c5b4ef;
+            --card-bg: #1a1030;
+            --card-border: #342359;
+            --question-color: #f2edff;
+            --option-bg: #21133a;
+            --option-border: #433069;
+            --option-hover-bg: #2b1a49;
+            --option-hover-border: #8b5cf6;
+            --option-selected-bg: #36205f;
+            --option-selected-border: #a78bfa;
+            --option-selected-shadow: rgba(139,92,246,0.4);
+            --btn-bg: #2f1e50;
+            --btn-text: #ece6ff;
+            --btn-primary-bg: #7c3aed;
+            --btn-primary-hover-bg: #6d28d9;
+            --result-bg: #19102f;
+            --result-border: #3a2863;
+            --emoji-bg: #2a1b47;
+            --quote-color: #d3c3ff;
+            --quote-border: #8f6be8;
+            --desc-bg: #21153b;
+            --dim-bg: #281a45;
+            --restart-bg: #6741c9;
+            --disclaimer-color: #ccbaf7;
+            --disclaimer-bg: #201338;
+            --footer-color: #ab95df;
+        }
+        body.theme-light {
+            --bg-body: #f6f1ff;
+            --text-main: #2d2345;
+            --container-bg: #fdfbff;
+            --container-border: #ddd2f6;
+            --title-grad-1: #8b5cf6;
+            --title-grad-2: #6d28d9;
+            --sub-color: #7d68a8;
+            --sub-border: #d9cfff;
+            --progress-bg: #e7defa;
+            --progress-fill: #8b5cf6;
+            --counter-color: #78639d;
+            --card-bg: #f8f4ff;
+            --card-border: #e2d8fb;
+            --question-color: #342457;
+            --option-bg: #ffffff;
+            --option-border: #d6c7f2;
+            --option-hover-bg: #f1e9ff;
+            --option-hover-border: #a78bfa;
+            --option-selected-bg: #e7dbff;
+            --option-selected-border: #8b5cf6;
+            --option-selected-shadow: rgba(139,92,246,0.25);
+            --btn-bg: #dbcdfa;
+            --btn-text: #322552;
+            --btn-primary-bg: #7c3aed;
+            --btn-primary-hover-bg: #6d28d9;
+            --result-bg: #f7f1ff;
+            --result-border: #e1d2ff;
+            --emoji-bg: #ece2ff;
+            --quote-color: #7352a8;
+            --quote-border: #b69bff;
+            --desc-bg: #f4ecff;
+            --dim-bg: #e7dcff;
+            --restart-bg: #c4b1f6;
+            --disclaimer-color: #7a62a6;
+            --disclaimer-bg: #f2eaff;
+            --footer-color: #8f79b8;
+        }
+        body {
+            background: var(--bg-body);
+            font-family: 'Segoe UI', '华文楷书', 'Microsoft YaHei', 'PingFang SC', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: var(--text-main);
+        }
+        .container {
+            max-width: 760px;
+            margin: 0 auto;
+            background: var(--container-bg);
+            border-radius: 48px 28px 48px 28px;
+            box-shadow: 0 25px 40px -16px rgba(0,0,0,0.2);
+            overflow: hidden;
+            padding: 24px 22px 36px;
+            border: 1px solid var(--container-border);
+        }
+        .theme-switch-wrap {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 8px;
+        }
+        .theme-switch-btn {
+            border-radius: 999px;
+            padding: 7px 14px;
+            font-size: 0.82rem;
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            border: 1px solid var(--container-border);
+            min-height: auto;
+        }
+        h1 {
+            font-size: 1.9rem;
+            text-align: center;
+            margin: 0 0 6px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--title-grad-1), var(--title-grad-2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .sub {
+            text-align: center;
+            color: var(--sub-color);
+            border-bottom: 1px dashed var(--sub-border);
+            padding-bottom: 14px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        .cover-panel {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 30px;
+            padding: 24px 18px;
+            margin: 14px 0 18px;
+            text-align: center;
+        }
+        .cover-emoji {
+            font-size: 3rem;
+            margin-bottom: 8px;
+        }
+        .cover-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--question-color);
+            margin-bottom: 8px;
+        }
+        .cover-desc {
+            font-size: 0.92rem;
+            line-height: 1.6;
+            color: var(--sub-color);
+            margin-bottom: 14px;
+        }
+        .cover-points {
+            text-align: left;
+            background: var(--container-bg);
+            border: 1px solid var(--container-border);
+            border-radius: 14px;
+            padding: 10px 12px;
+            font-size: 0.84rem;
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }
+        .cover-point {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+        }
+        .cover-point + .cover-point {
+            border-top: 1px dashed var(--sub-border);
+        }
+        .cover-point-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--btn-primary-bg), var(--btn-primary-hover-bg));
+            color: #fff;
+            font-size: 0.72rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .cover-start-btn {
+            width: 100%;
+        }
+        .progress-area {
+            background: var(--progress-bg);
+            border-radius: 40px;
+            height: 10px;
+            margin: 12px 0 8px;
+        }
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--progress-fill);
+            border-radius: 40px;
+            transition: width 0.2s;
+        }
+        .q-counter {
+            text-align: right;
+            font-size: 0.8rem;
+            color: var(--counter-color);
+            margin: 8px 0 6px;
+        }
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 32px;
+            padding: 24px 20px;
+            margin: 16px 0 22px;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.03);
+            border: 1px solid var(--card-border);
+        }
+        .question-text {
+            font-size: 1.4rem;
+            font-weight: 560;
+            line-height: 1.4;
+            margin-bottom: 28px;
+            color: var(--question-color);
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option {
+            background: var(--option-bg);
+            border-radius: 60px;
+            padding: 10px 18px;
+            border: 1px solid var(--option-border);
+            cursor: pointer;
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+        }
+        .option:hover {
+            background: var(--option-hover-bg);
+            border-color: var(--option-hover-border);
+        }
+        .option.selected {
+            background: var(--option-selected-bg);
+            border-color: var(--option-selected-border);
+            box-shadow: inset 0 1px 2px #00000008, 0 2px 8px var(--option-selected-shadow);
+        }
+        .option-prefix {
+            font-size: 1.2rem;
+            width: 30px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            gap: 12px;
+        }
+        button {
+            background: var(--btn-bg);
+            border: none;
+            padding: 10px 22px;
+            border-radius: 48px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            color: var(--btn-text);
+        }
+        button.primary {
+            background: var(--btn-primary-bg);
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        button.primary:hover {
+            background: var(--btn-primary-hover-bg);
+        }
+        .result-box {
+            background: var(--result-bg);
+            border-radius: 36px;
+            padding: 26px 22px;
+            margin-top: 20px;
+            text-align: center;
+            border: 2px solid var(--result-border);
+        }
+        .result-main {
+            max-width: 640px;
+            margin: 0 auto;
+        }
+        .personality-emoji {
+            font-size: 4rem;
+            background: var(--emoji-bg);
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+            border-radius: 100px;
+            margin: 0 auto 16px;
+            text-align: center;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+        }
+        .result-name {
+            font-size: 1.9rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--title-grad-1), var(--title-grad-2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 8px 0 6px;
+        }
+        .result-quote {
+            font-size: 1.05rem;
+            font-style: italic;
+            color: var(--quote-color);
+            margin: 8px 0 14px;
+            border-left: 3px solid var(--quote-border);
+            padding-left: 14px;
+            text-align: left;
+        }
+        .result-desc {
+            background: var(--desc-bg);
+            padding: 18px;
+            border-radius: 28px;
+            text-align: left;
+            line-height: 1.65;
+            margin: 16px 0 12px;
+            font-size: 0.95rem;
+        }
+        .dimension-scores {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 16px;
+            background: var(--dim-bg);
+            padding: 12px;
+            border-radius: 18px;
+            font-size: 0.82rem;
+            text-align: left;
+        }
+        .dimension-scores span {
+            background: var(--container-bg);
+            border: 1px solid var(--container-border);
+            border-radius: 12px;
+            padding: 8px 10px;
+        }
+        .restart-btn {
+            background: var(--restart-bg);
+            margin-top: 20px;
+            width: 100%;
+            font-weight: bold;
+        }
+        .result-actions-guide {
+            margin-top: 14px;
+            text-align: left;
+            background: var(--desc-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 12px 14px;
+            line-height: 1.55;
+            font-size: 0.88rem;
+        }
+        .result-actions-guide strong {
+            color: var(--question-color);
+        }
+        .disclaimer-note {
+            font-size: 0.8rem;
+            text-align: center;
+            margin-top: 24px;
+            color: var(--disclaimer-color);
+            background: var(--disclaimer-bg);
+            padding: 8px;
+            border-radius: 60px;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            margin-top: 28px;
+            color: var(--footer-color);
+        }
+        @media (max-width: 768px) {
+            .theme-switch-wrap {
+                margin-bottom: 6px;
+            }
+            .theme-switch-btn {
+                font-size: 0.76rem;
+                padding: 6px 12px;
+            }
+            body {
+                padding: 14px;
+            }
+            .container {
+                border-radius: 28px 20px 28px 20px;
+                padding: 18px 16px 24px;
+            }
+            h1 {
+                font-size: 1.55rem;
+            }
+            .sub {
+                font-size: 0.82rem;
+                margin-bottom: 16px;
+                padding-bottom: 10px;
+            }
+            .question-card {
+                border-radius: 24px;
+                padding: 18px 14px;
+                margin: 12px 0 16px;
+            }
+            .cover-panel {
+                border-radius: 22px;
+                padding: 16px 12px;
+                margin: 10px 0 14px;
+            }
+            .cover-title {
+                font-size: 1.05rem;
+            }
+            .cover-desc {
+                font-size: 0.84rem;
+                margin-bottom: 10px;
+            }
+            .cover-points {
+                font-size: 0.78rem;
+                margin-bottom: 10px;
+            }
+            .question-text {
+                font-size: 1.16rem;
+                margin-bottom: 18px;
+            }
+            .option {
+                min-height: 52px;
+                padding: 12px 14px;
+                border-radius: 18px;
+                align-items: flex-start;
+            }
+            .option-prefix {
+                width: 24px;
+                font-size: 1rem;
+                margin-top: 1px;
+            }
+            button {
+                min-height: 46px;
+                padding: 10px 16px;
+                border-radius: 14px;
+                font-size: 0.92rem;
+            }
+            .result-box {
+                border-radius: 24px;
+                padding: 18px 14px;
+            }
+            .result-name {
+                font-size: 1.5rem;
+            }
+            .result-desc {
+                border-radius: 16px;
+                font-size: 0.92rem;
+                padding: 14px;
+            }
+            .dimension-scores {
+                border-radius: 18px;
+                gap: 8px;
+                font-size: 0.78rem;
+                padding: 10px;
+            }
+            .disclaimer-note {
+                font-size: 0.74rem;
+                line-height: 1.45;
+                border-radius: 14px;
+            }
+        }
+        @media (max-width: 520px) {
+            .theme-switch-btn {
+                font-size: 0.72rem;
+                padding: 5px 10px;
+            }
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 14px 12px 18px;
+                border-radius: 20px 14px 20px 14px;
+            }
+            h1 {
+                font-size: 1.3rem;
+            }
+            .sub {
+                font-size: 0.76rem;
+                margin-bottom: 12px;
+            }
+            .q-counter {
+                font-size: 0.74rem;
+                margin: 6px 0 4px;
+            }
+            .question-text {
+                font-size: 1.02rem;
+                line-height: 1.5;
+            }
+            .options {
+                gap: 8px;
+            }
+            .option {
+                min-height: 48px;
+                padding: 10px 12px;
+                gap: 8px;
+                font-size: 0.9rem;
+            }
+            .nav-buttons {
+                gap: 8px;
+            }
+            .nav-buttons button {
+                flex: 1;
+            }
+            #submitBtn {
+                margin-top: 12px !important;
+            }
+            .personality-emoji {
+                width: 82px;
+                height: 82px;
+                line-height: 82px;
+                font-size: 3rem;
+            }
+            .result-name {
+                font-size: 1.28rem;
+            }
+            .result-quote {
+                font-size: 0.92rem;
+                padding-left: 10px;
+            }
+            .result-actions-guide {
+                font-size: 0.82rem;
+                border-radius: 14px;
+                padding: 10px 12px;
+            }
+            .dimension-scores {
+                display: grid;
+                grid-template-columns: 1fr;
+                width: 100%;
+            }
+            .restart-btn {
+                margin-top: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <div class="theme-switch-wrap">
+        <button id="themeToggleBtn" class="theme-switch-btn" type="button">切换到浅色版</button>
+    </div>
+    <div id="quizHeader" style="display:none;">
+        <h1>📜 人生四大作品 · 趣味人格测试</h1>
+        <div class="sub">事业 · 家庭 · 子女 · 健康 | 轻松作答 发现你的生活风格</div>
+    </div>
+    <div id="coverPanel" class="cover-panel">
+        <div class="cover-emoji">🎭</div>
+        <div class="cover-title">欢迎来到「人生四大作品人格测试」</div>
+        <div class="cover-desc">全程轻松作答，看看你在事业、家庭、子女、健康四个维度的风格画像。</div>
+        <div class="cover-points">
+            <div class="cover-point"><span class="cover-point-icon">1</span><span>共 30 题，约 10 分钟完成</span></div>
+            <div class="cover-point"><span class="cover-point-icon">2</span><span>每题四个选项，按直觉选更准</span></div>
+            <div class="cover-point"><span class="cover-point-icon">3</span><span>结果可截图分享，也可反复解锁新人格</span></div>
+        </div>
+        <button id="startBtn" class="primary cover-start-btn">🚀 开始测试</button>
+    </div>
+    <div id="quizPanel" style="display:none;">
+        <div class="progress-area"><div class="progress-bar" id="progressBar"></div></div>
+        <div class="q-counter" id="qCounter">第1 / 30题</div>
+        <div class="question-card" id="questionCard">
+            <div class="question-text" id="questionText"></div>
+            <div class="options" id="optionsContainer"></div>
+        </div>
+        <div class="nav-buttons">
+            <button id="prevBtn">◀ 上一题</button>
+            <button id="nextBtn" class="primary">下一题 ▶</button>
+        </div>
+        <button id="submitBtn" class="primary" style="display:none; width:100%; margin-top:18px;">✨ 查看我的人格 ✨</button>
+    </div>
+    <div id="resultPanel" style="display:none;"></div>
+    <div class="disclaimer-note">若你尚未结婚或生子，不妨放飞想象作答。</div>
+    <footer>⚡ 趣味解读 · 人生四大作品 ⚡ · ⚡ 个人战略探索出品 ⚡</footer>
+</div>
+
+<script>
+    // ==================== 趣味题目（无提前触发结束，所有题目必答） ====================
+    const questionsData = [
+        // 事业 7题
+        { text: "周一早上闹钟响了，你第一反应是？", options: [{text:"鲤鱼打挺起床，今天要开周会",score:2},{text:"按掉闹钟再眯5分钟，然后极速出门",score:1},{text:"请半天假，下午再去",score:0},{text:"把闹钟关掉，发消息“老板我发烧了”",score:0}], dim:"career" },
+        { text: "领导在群里发了一个60秒语音方阵，你会？", options: [{text:"逐条听完，并回复“收到，落实”",score:2},{text:"转文字，大概扫一眼",score:1},{text:"假装没看到，等别人先回",score:0},{text:"回复“好的”，然后继续刷短视频",score:1}], dim:"career" },
+        { text: "开会时你突然放了个屁，声音不大但旁边人都听到了，你会？", options: [{text:"面不改色，继续讲PPT",score:2},{text:"假装咳嗽两声掩盖",score:1},{text:"脸红到耳朵根，想找个地缝",score:0},{text:"指着旁边的同事说“你中午吃了啥”",score:0}], dim:"career" },
+        { text: "公司团建要爬山，你的真实想法是？", options: [{text:"太好了，正好展示我的体能",score:2},{text:"能不去就不去，但不好意思请假",score:1},{text:"直接说“我膝盖不好”",score:0},{text:"去了然后全程坐缆车在山顶等大家",score:1}], dim:"career" },
+        { text: "同事升职了，你觉得他能力不如你，你会？", options: [{text:"恭喜他，然后更努力工作证明自己",score:2},{text:"心里不爽，但表面笑嘻嘻",score:1},{text:"开始刷招聘APP",score:0},{text:"在匿名吐槽群里发“懂的都懂”",score:0}], dim:"career" },
+        { text: "老板说“这个项目大家自愿加班”，你会？", options: [{text:"主动留下，并问“还有啥我能做的”",score:2},{text:"看别人留不留，随大流",score:1},{text:"准时走，并说“家里有事”",score:0},{text:"走之前给老板发一份“加班费申请模板”",score:0}], dim:"career" },
+        { text: "你办公桌上的植物/摆件状态是？", options: [{text:"生机勃勃，我每天打理",score:2},{text:"还活着，偶尔浇浇水",score:1},{text:"已经死了，但没扔",score:0},{text:"根本没有，因为我知道自己养不活",score:0}], dim:"career" },
+        // 家庭 7题
+        { text: "伴侣问你“我胖了吗”，你的标准答案是？", options: [{text:"“没有，你一直都好看”",score:2},{text:"“有一点点，但我也胖了”",score:1},{text:"沉默5秒，然后说“你开心就好”",score:0},{text:"打开手机前置摄像头递过去：“你自己看”",score:0}], dim:"family" },
+        { text: "周末你刚拖完地，伴侣穿着室外鞋踩进来，你会？", options: [{text:"忍住，自己默默再拖一遍",score:2},{text:"“你能不能注意点？”但语气还行",score:1},{text:"当场爆炸，吵一架",score:0},{text:"拿起拖把追着他/她拖",score:0}], dim:"family" },
+        { text: "你刷到一条“这才是夫妻该有的样子”的抖音，你会？", options: [{text:"转发给伴侣，并说“学学人家”",score:0},{text:"自己看完就划走",score:1},{text:"点赞收藏，但绝不转发",score:1},{text:"评论“演的，别信”",score:2}], dim:"family" },
+        { text: "过年回谁家这个问题，你家的解决方案是？", options: [{text:"轮流，今年你家明年我家",score:2},{text:"各回各家，各找各妈",score:1},{text:"谁家都不回，出去旅游",score:1},{text:"抓阄，愿赌服输",score:0}], dim:"family" },
+        { text: "伴侣打呼噜震天响，你睡不着，你会？", options: [{text:"轻轻推一下，让他换个姿势",score:2},{text:"戴上耳塞，忍了",score:1},{text:"去客厅睡沙发",score:0},{text:"录下来，第二天放给他听",score:0}], dim:"family" },
+        { text: "你们吵架后，谁先低头？", options: [{text:"我，因为懒得冷战",score:2},{text:"对方，因为我比较倔",score:0},{text:"看情况，谁错谁认",score:1},{text:"不低头，用外卖点对方爱吃的东西当台阶",score:2}], dim:"family" },
+        { text: "你刷到前任的朋友圈，会？", options: [{text:"直接划走，不看",score:2},{text:"点进去看一下，但不点赞",score:1},{text:"放大照片仔细研究",score:0},{text:"截图发给闺蜜/兄弟：“你看他/她现在长这样了”",score:0}], dim:"family" },
+        // 子女 8题
+        { text: "孩子问你“我从哪里来的”，你的回答是？", options: [{text:"科学解释：妈妈肚子里长大的",score:2},{text:"“垃圾桶捡的”经典糊弄",score:0},{text:"“等你长大就知道了”",score:1},{text:"“你猜？”然后转移话题",score:1}], dim:"children" },
+        { text: "孩子考试考了95分，但全班平均分96，你会？", options: [{text:"“不错了，下次努力”",score:1},{text:"“那5分丢哪了？我们一起看看”",score:2},{text:"“没事，分数不重要”",score:0},{text:"发朋友圈：“我家学渣，求安慰”",score:0}], dim:"children" },
+        { text: "孩子当众大哭大闹要买玩具，你会？", options: [{text:"立刻买，别哭了",score:0},{text:"强行抱走，回家再说",score:1},{text:"蹲下来讲道理，等他冷静",score:2},{text:"蹲下来和他一起哭",score:0}], dim:"children" },
+        { text: "老师私聊你说“孩子最近上课走神”，你会？", options: [{text:"感谢老师，回家严肃谈话",score:2},{text:"回“好的，我注意”然后忘了",score:1},{text:"觉得老师在针对自己孩子",score:0},{text:"问老师“他走神在想什么？帮我问问”",score:0}], dim:"children" },
+        { text: "孩子说“我不想上学了”，你会？", options: [{text:"“不行，必须去”",score:0},{text:"“为什么？跟我说说”",score:2},{text:"“那你想干嘛？”",score:1},{text:"“太好了，我也不想上班，咱俩一起躺”",score:0}], dim:"children" },
+        { text: "别的家长在群里晒娃的奖状/才艺，你会？", options: [{text:"发个“👍”然后忽略",score:1},{text:"也找一张自己娃的奖状晒回去",score:0},{text:"私聊夸对方，但不发群里",score:2},{text:"发一张娃吃西瓜的照片：“我家娃的才艺是吃”",score:1}], dim:"children" },
+        { text: "孩子偷偷玩手机被你抓到，他会？", options: [{text:"立刻认错，把手机给你",score:2},{text:"狡辩“我在查资料”",score:1},{text:"把手机藏背后，假装没事",score:0},{text:"反问你“你怎么也在玩手机”",score:0}], dim:"children" },
+        { text: "你辅导作业时的状态是？", options: [{text:"耐心讲解，母慈子孝",score:2},{text:"讲三遍不会就开始深呼吸",score:1},{text:"十分钟后开始吼，鸡飞狗跳",score:0},{text:"打开搜题APP，让手机教",score:0}], dim:"children" },
+        // 健康 8题
+        { text: "你上一次体检是什么时候？", options: [{text:"今年，报告还留着",score:2},{text:"去年，报告找不到了",score:1},{text:"不记得了，没病去什么医院",score:0},{text:"体检？那是什么？能吃吗？",score:0}], dim:"health" },
+        { text: "你现在的睡眠状态是？", options: [{text:"倒头就睡，雷打不动",score:2},{text:"能睡着，但半夜会醒",score:1},{text:"躺床上刷手机，刷到睁不开眼才睡",score:0},{text:"失眠，然后在深夜思考人生意义",score:0}], dim:"health" },
+        { text: "你运动的方式是？", options: [{text:"每周规律去健身房/跑步",score:2},{text:"周末偶尔动一下，平时不动的",score:1},{text:"收藏健身视频就当练过了",score:0},{text:"取快递、上厕所就是我的运动",score:0}], dim:"health" },
+        { text: "你喝水的习惯是？", options: [{text:"每天8杯水，定时提醒",score:2},{text:"渴了才喝，有时一天不喝",score:0},{text:"只喝奶茶/咖啡/饮料，不喝白水",score:0},{text:"买了一个超大吨吨杯，然后忘记用",score:1}], dim:"health" },
+        { text: "你吃保健品吗？", options: [{text:"每天按时吃，维生素鱼油护肝片一套",score:2},{text:"买了但经常忘吃",score:1},{text:"不信这个，都是智商税",score:0},{text:"只吃“心理安慰型”，比如睡前喝枸杞水",score:1}], dim:"health" },
+        { text: "你现在的身体状态，用一句话形容是？", options: [{text:"上五楼不带喘",score:2},{text:"上五楼喘一下",score:1},{text:"上五楼歇两次",score:0},{text:"能坐电梯绝不走楼梯",score:0}], dim:"health" },
+        { text: "你熬夜之后，第二天怎么补救？", options: [{text:"不补救，继续熬",score:0},{text:"喝咖啡硬撑",score:1},{text:"中午补觉半小时",score:2},{text:"发朋友圈“再也不熬夜了”，然后今晚继续",score:0}], dim:"health" },
+        { text: "你看到“猝死前兆”这类文章会？", options: [{text:"认真看完，然后开始养生",score:2},{text:"划走，不看就不怕",score:0},{text:"转发到家族群",score:1},{text:"收藏，然后继续熬夜",score:0}], dim:"health" }
+    ];
+
+    const personalityList = [
+        // 一、均衡型（4种）
+        { name:"中庸本庸", career:"M", family:"M", children:"M", health:"M", emoji:"⚖️", quote:"子曰：过犹不及，差不多就行。", desc:"你像孔子家那只猫——哪儿都待，但哪儿都不是C位。事业上不争不抢但也不掉队，家庭里不冷不热但也不冷战，孩子成绩中等你也不焦虑，体检报告有几个箭头你也不慌。朋友夸你稳，只有你知道，稳是因为懒得动。你的人生主打一个‘差不多得了’。但话说回来，这年头能稳住不崩的都是狠人，继续做朋友圈里的定海神针——哪怕是个盆栽，也是活得最久的那盆。" },
+        { name:"六边形战士", career:"H", family:"H", children:"H", health:"H", emoji:"💪", quote:"《周易》：天行健，君子自强不息……且不息……且不息……", desc:"你就是人类高质量中年人，朋友圈里的人生赢家模板。老板把你当左膀右臂，伴侣把你当贴心棉袄，孩子成绩好到你都不好意思晒，体检报告绿得像春天的大草原。但你有没有发现，你已经三个月没睡过7小时了？你的日历比老板的还满，你的发际线比你的人生目标退得还快。调侃一句：小心累成‘六边形墓碑’。话又说回来，完美不是永动机，地球离了你照样转，该躺就躺会儿吧。" },
+        { name:"四大皆空", career:"L", family:"L", children:"L", health:"L", emoji:"🍃", quote:"六祖惠能：本来无一物，何处惹尘埃。", desc:"您已臻化境：事业随缘、家庭随缘、子女随缘、健康随缘。同事说你佛，伴侣说你懒，孩子说你是‘睡觉型家长’。你的人生信条是：生死有命富贵在天，升职加薪与我无关。你活成了庄子，但庄周还知道做梦，你连梦都懒得做。调侃：你是躺平界的OG，是佛系圈的祖师爷。但说句掏心窝的话，躺平可以，房贷别忘了还，孩子学费别忘了交，不然连躺的地方都没有。" },
+        { name:"潜龙在渊", career:"M", family:"M", children:"M", health:"H", emoji:"🐉", quote:"《易经》：潜龙勿用，养精蓄锐。", desc:"你表面平平无奇，像个普通中年人——事业还行、家庭凑合、孩子不差。但你的体检报告出卖了你：各项指标优秀得像20岁小伙。你偷偷晨跑、偷偷吃轻食、偷偷早睡，同事以为你佛系，其实你在下一盘大棋——活得比谁都久。你是朋友圈里的‘隐形卷王’，卷的不是事业，是寿命。别人卷到住院，你卷到领养老金。这波，你在大气层。" },
+
+        // 二、事业偏科型（12种）
+        { name:"工作狂魔", career:"H", family:"M", children:"M", health:"M", emoji:"💼", quote:"《庄子》：吾生也有涯，而加班也无涯。", desc:"你的生活就是工作，工作就是生活。周末？那是用来加班的。假期？那是换地方办公。你对PPT的熟悉程度超过了对伴侣的脸，你回老板微信的速度比回爱人的消息快三倍。你的家庭还算稳定——至少还没收到离婚协议；孩子还算听话——至少还没被叫家长。但你有没有发现，你已经记不清上次和家人吃饭是什么时候了。调侃：你的人生KPI已经完成80%，剩下的20%是猝死前把年假休了。但说真的，窗外的阳光也值得你看一眼，老板不会因为你少加一天班就破产。" },
+        { name:"工作鳝", career:"H", family:"L", children:"L", health:"L", emoji:"🐍", quote:"《孟子》：三过家门而不入——大禹，也离了婚。", desc:"你是当代大禹，公司是你家，工位是你的床。你的伴侣说你是‘云恋人’——只存在于微信聊天记录里；孩子管你叫‘那个亲戚’——见面都得先自我介绍。你的事业蒸蒸日上，但你的家庭已经快凉透了，体检报告上的红色箭头比你项目的KPI还多。调侃：等你功成名就那天，你的伴侣可能已经和别人岁月静好了。话又说回来，治水要疏导，生活也要平衡，别等到退休才发现家没了。" },
+        { name:"职场孤狼", career:"H", family:"M", children:"L", health:"L", emoji:"🐺", quote:"《孟子》：虽千万人吾往矣……但没人等我回家。", desc:"你的事业高歌猛进，年会你是C位，老板夸你是栋梁。但你的家庭只是勉强维系——你的另一半已经开始叹气了；孩子基本放养——家长群你永远潜水，老师都快忘了你是哪位。你的身体也亮起了黄灯，但你顾不上，因为你还在回邮件。调侃：你是职场的英雄，是家庭的客人，是医院的潜在VIP。但英雄也需要一个拥抱，今天早点回家，哪怕只是吃顿饭。" },
+        { name:"拼命三郎", career:"H", family:"M", children:"M", health:"L", emoji:"🔥", quote:"诸葛亮《出师表》：鞠躬尽瘁，死而后已。", desc:"你是老板最爱的员工，也是体检报告最怕的客户。你干活不要命，加班不加价，项目交给你老板放心。你的家庭还算稳定——你的另一半虽然抱怨但还能忍；孩子成绩还行但你基本不辅导。但你的身体已经报警了：脂肪肝、高血压、颈椎病，三件套齐了。调侃：你再这么拼下去，老板会在你的追悼会上说‘痛失爱将’，然后第二天招个新人。留得青山在，不怕没柴烧，青山都快秃了，该歇歇了。" },
+        { name:"事业健康双卷", career:"H", family:"L", children:"L", health:"H", emoji:"🏋️", quote:"毛主席：身体是革命的本钱，但本钱不投家庭。", desc:"你每天早上五公里，晚上加班到十点，体检报告全绿，体脂率让20岁小伙羡慕。但你的家庭冷得像冰窖——你的伴侣和你已经分房睡，孩子见到你像见到陌生人。你把自己活成了一台精密的机器：高效、健康、孤独。调侃：你的腹肌和你的冷漠程度成正比，六块腹肌换一份亲密关系，划算吗？肌肉再大没人摸也是摆设，身体再好没人分享也是白搭，对家人笑一个吧。" },
+        { name:"老板的好驴", career:"H", family:"M", children:"M", health:"M", emoji:"🫏", quote:"诸葛亮《后出师表》：鞠躬尽瘁，死而后已……然后老板换新驴。", desc:"你是公司里的老黄牛，任劳任怨，从不说no。老板画的饼你全吃了，项目里的坑你全填了。你的家庭还算稳定——你的另一半偶尔抱怨但不至于掀桌；孩子还算听话但和你不太亲。你的身体也还能撑——但你知道撑不了多久。调侃：你以为你是公司的功臣，其实你只是老板的驴，拉不动了就会被换掉。拉磨也要吃草，给自己留点时间体检、陪家人、喘口气，驴也有驴权。" },
+        { name:"伪成功人士", career:"H", family:"L", children:"H", health:"L", emoji:"👑", quote:"俗语：光宗耀祖，断子绝孙？", desc:"你的事业风生水起，朋友圈里全是成功学鸡汤；你的孩子成绩顶尖，奖状贴满了一面墙。但你的另一半正在闹别扭——因为你已经半年没和对方吃过晚饭；你的脂肪肝已经到了中度——因为你应酬喝酒从不拒绝。调侃：你的荣誉墙和你的感情裂痕一样多，你的存款和你的医药费成正比。面子有了，里子漏了，补一补还来得及，先把家里那位哄好，再去医院复查。" },
+        { name:"职场咸鱼", career:"L", family:"M", children:"M", health:"M", emoji:"🐟", quote:"《庄子》：子非鱼，安知鱼之不乐？", desc:"你的人生信条是：能少干绝不多干，能推活绝不接活。老板画饼你当没听见，同事卷你你当没看见。你的家庭还算和谐——因为你没精力吵架；孩子还算正常——因为你没力气鸡娃；身体还行——因为你不加班不熬夜。调侃：你是职场的透明人，但你是生活的明白人。咸鱼也有咸鱼的快乐，知足常乐，但别咸到发臭就行。" },
+        { name:"佛系上班", career:"L", family:"H", children:"H", health:"H", emoji:"🙏", quote:"《金刚经》：应无所住，而生其心。", desc:"你的工作只是副业，家庭和健康才是你的主业。你准时下班、拒绝加班、周末不回消息，把时间全给了家人和自己。你的家庭幸福指数爆表，孩子和你关系亲密，你的身体指标比同龄人好一大截。调侃：你是职场里的‘异类’，但你是生活里的‘状元’。你把生活过成了诗，工作只是点缀，你已经找到了人生的正确答案。" },
+        { name:"躺平先驱", career:"L", family:"M", children:"L", health:"M", emoji:"🛌", quote:"《道德经》：无为而治，治到失业。", desc:"能躺着绝不坐着，能坐着绝不站着，能站着绝不走着——这是你的人生哲学。你的工作就是摸鱼，你的周末就是睡觉，你的孩子放养，你的另一半佛系。调侃：你的躺平姿势已经炉火纯青，但小心躺太久腰会疼。躺平是一种态度，但别躺到起不来，偶尔坐起来看看世界也没坏处。" },
+        { name:"养老预备役", career:"L", family:"M", children:"M", health:"H", emoji:"👴", quote:"陶渊明：采菊东篱下，悠然见南山。", desc:"你虽然还没到退休年龄，但精神上已经退了。你每天盘算的是退休金够不够，养生食谱怎么搭，哪个公园的太极拳教得好。工作？那是等退休时的消遣。调侃：你的身体是30岁，心态是60岁，工龄是40岁——但实际才35。心态年轻比什么都重要，但别太急着变老，该拼的时候还是可以拼一下。" },
+        { name:"职场透明人", career:"L", family:"L", children:"L", health:"M", emoji:"👻", quote:"《道德经》：视之不见，名曰夷。", desc:"开会没人叫你，聚餐没人喊你，年终奖忘了你，裁员名单也忘了你。你是公司的幽灵员工，存在感为负，但工资从不迟到。你的家庭也差不多——你的另一半当你空气，孩子当你提款机。调侃：你活成了《哈利波特》里的幽灵，看得见摸不着。低调是福，闷声发大财，但偶尔也要刷一下存在感，否则真被忘了。" },
+        // 三、家庭偏科型（12种）
+        { name:"家庭堡垒", career:"L", family:"H", children:"L", health:"L", emoji:"🏰", quote:"《诗经》：宜其室家，不事生产。", desc:"你是模范伴侣，家里井井有条，你的爱人对你赞不绝口。但你的事业基本躺平——升职加薪和你无关；你的孩子被你惯得无法无天；你的身体因为操劳过度开始报警。调侃：你家是五星级酒店，但你是没工资的店长，还是全年无休那种。家是温暖的港湾，但你也需要上岸歇歇，别把自己累成港湾里的礁石。" },
+        { name:"家族族长", career:"H", family:"H", children:"L", health:"M", emoji:"🏮", quote:"《礼记》：齐家治国，独独忘了治自己。", desc:"你是家族里的主心骨，亲戚借钱找你，家族聚会你坐主桌，父母看病你陪，兄弟姐妹工作你帮。你的事业也搞得风生水起，家里大事小情一把抓。但你的孩子基本放养——因为你没时间管；你的血压已经快到临界值——因为操心太多。调侃：你是家族的ATM机，还是吐钞票的那种，但机器也会坏。管好自己才能管好家族，先去体检，再去度假，家族没有你照样转。" },
+        { name:"妻管严晚期", career:"M", family:"H", children:"M", health:"L", emoji:"🙇", quote:"《论语》：唯女子与小人……啊不是，爱人永远是对的。", desc:"你的事业一般般，但你的家庭地位为负——工资全上交，零花钱按粒算，周末行程另一半定，朋友约饭要审批。你的孩子看在眼里，已经学会了你那套‘认怂保平安’的生存法则。你的身体因为长期压抑开始出问题。调侃：你的家庭幸福感来自爱人的‘允许’，你的血压来自爱人的‘不满意’。怕爱人会发达，但也要注意自己的啤酒肚和小心脏，偶尔硬气一回也没事。" },
+        { name:"模范伴侣", career:"M", family:"H", children:"M", health:"H", emoji:"💑", quote:"《诗经》：琴瑟在御，岁月静好。", desc:"你和爱人的关系让人羡慕，是朋友圈里的模范情侣/夫妻。你们一起做饭、一起散步、一起追剧，吵架不过夜，纪念日从不落。你的事业中等偏上，孩子也算听话，身体倍儿棒。调侃：你们活成了别人眼里的‘神仙眷侣’，但只有你知道，神仙也会为了谁洗碗而翻脸。爱情最好的样子就是互相成就，你已经做到了，继续保持。" },
+        { name:"家庭煮夫/妇", career:"L", family:"H", children:"M", health:"M", emoji:"🍳", quote:"俗语：洗手作羹汤，不管窗外事。", desc:"你的战场在厨房，你的成就是家人的笑容。你放弃了事业，把全部精力投入家庭——做饭、打扫、带孩子、照顾老人。你的伴侣负责赚钱养家，你负责把家打理得井井有条。调侃：你是家里的CEO（Chief Eating Officer），但工资条上写的是0。烟火气里藏着最大的幸福，但别忘了，你也是需要被照顾的那个人。" },
+        { name:"恋爱脑转世", career:"M", family:"H", children:"L", health:"M", emoji:"💕", quote:"卓文君《白头吟》：愿得一人心，白首不相离。", desc:"你的世界里伴侣排第一，其他都是配角。你记得每一个纪念日，会为对方准备惊喜，吵架永远你先低头。你的事业还行，但为了陪伴侣推掉过升职机会；你的孩子？那是‘爱情的副产品’，排第二位。调侃：你是恋爱界的活化石，活在上世纪的琼瑶剧里。深情是美德，但别丢了自我，你的世界里还应该有你自己。" },
+        { name:"空巢预备役", career:"M", family:"H", children:"L", health:"H", emoji:"🐦", quote:"俗语：儿孙自有儿孙福，没有儿孙我享福。", desc:"孩子已经住校或工作了，你和爱人终于迎来了二人世界。你们开始旅游、跳广场舞、学摄影、养花种草，把年轻时没做的事全补上。你的事业已经看淡，身体健康是你们最大的资本。调侃：你们活成了别人羡慕的样子——有钱有闲没孩子烦。黄金十年，好好享受，但别太浪摔断腿，毕竟还要跳广场舞。" },
+        { name:"家庭破碎者", career:"L", family:"L", children:"M", health:"M", emoji:"💔", quote:"《诗经》：兄弟阋于墙，外御其侮。可惜墙内先塌了。", desc:"你的家庭关系紧张，是你最大的心结。你和爱人的关系冷淡得像合租室友，亲子关系也疏远得像远房亲戚。你的事业也因为家庭问题分心，一落千丈。你的身体还好，但心里苦。调侃：你家不是港湾，是战场，你也不是船长，是难民。修复永远不晚，先从一顿饭开始，或者一次真诚的道歉。" },
+        { name:"独行侠", career:"M", family:"L", children:"M", health:"H", emoji:"🚶", quote:"李白：举杯邀明月，对影成三人。", desc:"你享受独处，不需要太多社交。你一个人吃饭、一个人旅行、一个人看电影，你觉得自己就是最好的伴侣。你的家庭关系淡漠，但你不在乎。你的事业还行，身体健康，日子过得逍遥自在。调侃：你是当代隐士，活成了李白诗里的样子，但李白还有酒友，你呢？独处是一种能力，你已精通，但偶尔也试试和别人分享快乐。" },
+        { name:"恐婚族", career:"H", family:"L", children:"L", health:"H", emoji:"😨", quote:"《围城》：婚姻是一座围城，我还没准备好进去。", desc:"你事业有成，身体倍棒，朋友一堆，但一提到长期关系就害怕。你见过太多感情的鸡飞狗跳，觉得单身才是王道。你的父母催婚你当耳边风，你的朋友秀恩爱你默默拉黑。调侃：你是感情界的‘观望者’，观望了十年还在观望。遇到对的人，坟墓也能变花园，别因为害怕而错过。" },
+        { name:"离婚冷静期", career:"M", family:"L", children:"M", health:"L", emoji:"⚖️", quote:"敦煌出土《放妻书》：一别两宽，各生欢喜。", desc:"你正在经历或已经历过感情的波折。分开让你身心俱疲，事业受影响，健康亮红灯，孩子也跟着受罪。你开始反思亲密关系的意义，也开始重新审视自己的人生。调侃：你的前半生是一部家庭伦理剧，后半生希望是喜剧。结束是为了更好的开始，收拾好心情，重新出发。" },
+        { name:"孤家寡人", career:"H", family:"L", children:"H", health:"M", emoji:"👑", quote:"苏轼：高处不胜寒。起舞弄清影，何似在人间。", desc:"你事业成功，孩子优秀，但身边空无一人。你的伴侣离开了你，你的朋友渐行渐远，你一个人住在空荡荡的大房子里，只有孩子偶尔回来看你。你的身体还行，但心里寂寞。调侃：你是人生的赢家，也是人生的孤家寡人，赢了个寂寞。成功需要分享，否则只是数字，拿起电话，给旧友打个招呼。" },
+        // 四、子女偏科型（12种）
+        { name:"鸡娃教主", career:"L", family:"M", children:"H", health:"L", emoji:"🐔", quote:"俗语：望子成龙，望己成虫。", desc:"你自己躺平，却给娃报了八个补习班。你的名言是：‘我这辈子就这样了，你可得争气。’你的孩子被你压得喘不过气，你的身体也因为焦虑开始出问题。调侃：你是在培养哪吒吗？小心娃以后把你当敖丙。鸡娃不如鸡自己，你卷起来，娃就能喘口气。" },
+        { name:"海淀妈妈转世", career:"M", family:"L", children:"H", health:"L", emoji:"🏫", quote:"刘向《列女传》：孟母三迁，你迁了三十次。", desc:"为了学区房换工作、换城市、换圈子，你的生活就是一场为了孩子教育的长征。你的家庭关系紧张，你的爱人抱怨你太极端，孩子见你就躲。你的身体因为长期焦虑和劳累亮起红灯。调侃：你活成了《小舍得》里的配角，还是最悲情那个。孩子需要的不是提款机家长，而是一个会笑的家长，你的笑容比学区房更值钱。" },
+        { name:"儿奴", career:"L", family:"H", children:"H", health:"L", emoji:"👶", quote:"鲁迅：俯首甘为孺子牛……然后牛累死了。", desc:"你所有时间精力都在孩子身上，事业放弃，健康透支。你是娃的保姆、司机、私教、心理咨询师，全年无休。你的爱人还算支持，但你基本没有自己的生活。调侃：等娃长大，你的墓志铭可能写着‘这里躺着一个累死的奴隶’。先做自己，再做父母，孩子也希望你快乐，而不是累死在半路上。" },
+        { name:"学霸家长", career:"H", family:"M", children:"H", health:"L", emoji:"🎓", quote:"俗语：老子英雄儿好汉，一起肝到两点半。", desc:"你事业强，孩子也强，你们家晚饭对话是讨论奥数题和公司战略。你的家庭勉强维持，你的爱人觉得自己是外人。你的健康亮红灯，因为你陪孩子熬夜刷题后还要早起开会。调侃：你家是‘内卷联合企业’，董事长是你，CEO是你娃。优秀会遗传，但猝死也会遗传，早点睡，比什么都强。" },
+        { name:"放羊家长", career:"M", family:"M", children:"L", health:"H", emoji:"🐑", quote:"《道德经》：无为而治，治出一个学渣。", desc:"你对孩子完全放养，成绩倒数也不急，老师请家长你当散步。你倒是很健康，每天遛弯泡脚，心态好得像个圣人。但你的孩子可能正在被学业压力压垮，你却浑然不觉。调侃：你的佛系是孩子的‘地狱模式’，老师已经把你拉黑了。放松不等于放弃，偶尔看看作业本，问问孩子最近学了什么，不费劲。" },
+        { name:"丁克一族", career:"H", family:"H", children:"L", health:"H", emoji:"🚫👶", quote:"《孝经》：不孝有三，无后为大？丁克笑了。", desc:"你们选择了不要孩子，享受二人世界和自由人生。你们的事业蒸蒸日上，感情甜蜜如初，身体健康，有钱有闲，想去哪去哪。调侃：你们是亲戚眼里的‘异类’，朋友眼里的‘神仙眷侣’。人生没有标准答案，开心就好，但记得把养老钱存够。" },
+        { name:"溺爱型家长", career:"M", family:"H", children:"H", health:"M", emoji:"🍭", quote:"《左传》：爱子，教之以义方。你教之以糖方。", desc:"你对孩子有求必应，生怕他受一点委屈。孩子要什么买什么，闯什么祸你都兜着。你的家庭关系和谐，但你正在培养一个未来的‘巨婴’。调侃：你是孩子的许愿池，但池子总有干的一天。爱要有边界，否则会变成害，适当说‘不’也是爱的表现。" },
+        { name:"虎爸虎妈", career:"H", family:"M", children:"H", health:"M", emoji:"🐯", quote:"《三字经》：子不教，父之过。你教得有点过。", desc:"你对孩子要求严格，相信棍棒底下出才子。你的孩子成绩优异，但性格可能有点压抑。你的事业也强，家庭关系还算稳定，但孩子和你之间总隔着一层。调侃：你是孩子眼里的‘暴君’，但暴君也是为他好。严格可以，但别忘了拥抱，孩子的心理健康比成绩单更重要。" },
+        { name:"佛系养娃", career:"L", family:"M", children:"L", health:"H", emoji:"🧘", quote:"《金刚经》：凡所有相，皆是虚妄。分数也是。", desc:"你对孩子的态度是：随缘，健康快乐就好。你不报班、不鸡娃、不比成绩，孩子开心你就开心。你的事业平平，但身体健康，心态好得让人羡慕。调侃：你是家长群里的‘清流’，也是老师眼里的‘佛系钉子户’。佛系不是放任，是信任，相信孩子有自己的节奏。" },
+        { name:"甩手家长", career:"H", family:"L", children:"L", health:"M", emoji:"🤷", quote:"《论语》：不在其位，不谋其政。育儿？交给另一半。", desc:"你把育儿全权交给另一半或学校，自己专注事业。你的事业蒸蒸日上，但你的孩子可能正在缺爱的环境中长大。你的另一半怨声载道，但你充耳不闻。调侃：你是家庭的‘云股东’，只出钱不出力。参与孩子的成长，错过不再来，你赚再多的钱也买不回孩子的童年。" },
+        { name:"焦虑家长", career:"M", family:"M", children:"H", health:"L", emoji:"😰", quote:"《论语》：人无远虑，必有近忧。你天天远虑。", desc:"你总拿自己孩子和别人比，比到全家焦虑。你失眠、掉发、胃疼，孩子的成绩单就是你的心电图。你的家庭关系紧张，因为你把焦虑传染给了每一个人。调侃：你是焦虑的代言人，你的口头禅是‘别人家孩子’。每个孩子都有自己的花期，你只管浇水施肥，剩下的交给时间。" },
+        { name:"丧偶式育儿", career:"H", family:"L", children:"H", health:"L", emoji:"😔", quote:"古诗：打起黄莺儿，莫教枝上啼。你一个人扛起整个家。", desc:"另一半基本缺席，你独自承担育儿重任。你又要上班又要带娃，累得像条狗。你的孩子还算争气，但你已经快撑不住了。你的身体报警，你的情绪崩溃，但你不敢倒下。调侃：你是超级英雄，但超级英雄也有片酬，你呢？零片酬。你已足够强大，但也值得被照顾，向另一半喊话，或者向朋友求助。" },
+        // 五、健康偏科型（12种）
+        { name:"养生狂魔", career:"L", family:"L", children:"L", health:"H", emoji:"🧘", quote:"《黄帝内经》：上医治未病，你治到没朋友。", desc:"你每天五点起床打八段锦，吃30种保健品，不吃外卖不熬夜不喝酒。你的体检报告完美的像假的，但你的社交生活基本为零——因为你拒绝一切饭局。你的家庭关系冷淡，因为你觉得‘他们不懂养生’。调侃：你活到120岁没问题，但可能没人愿意和你过最后50年。健康是1，其他是0，但1后面没有0，也只是1，别忘了享受生活。" },
+        { name:"朋克养生", career:"H", family:"L", children:"L", health:"H", emoji:"⚡", quote:"俗语：熬最晚的夜，泡最贵的枸杞。", desc:"你一边加班一边吃护肝片，一边应酬一边喝金银花，一边熬夜一边敷面膜。你的体检报告看着还行，但你的心理年龄已经60了。你的家庭被你忽略，你的孩子和你不太熟。调侃：你的身体是薛定谔的健康，看着没事，随时可能出事。别骗自己了，睡觉比枸杞管用，陪伴比护肝片重要。" },
+        { name:"健身走火入魔", career:"M", family:"L", children:"L", health:"H", emoji:"💢", quote:"《吕氏春秋》：流水不腐，户枢不蠹。但动到妻离子散就过了。", desc:"你每天泡健身房两小时，肌肉线条完美，体脂率让教练都羡慕。但你的家庭冷清得像停尸房——你的爱人觉得你自恋，孩子觉得你像AI。你的社交生活只剩健身房打卡和蛋白粉代餐。调侃：你的胸肌比你的人生更充实，你的蛋白粉比你的亲情更有味道。练出八块腹肌不如练出一次家庭聚餐，肌肉再大没人摸也是摆设。" },
+        { name:"养生地主", career:"H", family:"H", children:"M", health:"H", emoji:"💰", quote:"《尚书》：五福：寿、富、康宁、攸好德、考终命。你差个“好德”？", desc:"你事业成功，家庭和睦，身体健康，孩子中等偏上。你住大别墅，吃有机菜，每年体检两次，私人教练上门。但你发现，孩子出国了，爱人和你分房睡了，你一个人吃着有机菜看着大电视。调侃：你是‘高配版空巢老人’，有钱有闲没人陪。钱买不来陪伴，拿起电话给孩子打个视频，给爱人订束花，比吃啥保健品都强。" },
+        { name:"独活仙翁", career:"L", family:"L", children:"L", health:"H", emoji:"🐢", quote:"曹操《龟虽寿》：养怡之福，可得永年。但永年无人陪。", desc:"你活得很久很健康，每天遛弯、打太极、吃粗粮，但你的世界里只有你自己。你没有伴侣、没有孩子、没有朋友，你活成了一棵千年古树——根深叶茂，但周围寸草不生。调侃：你是长寿界的冠军，社交界的隐士，孤独界的王者。健康长寿是为了享受天伦之乐，不是当山顶洞人，走出门，交个朋友。" },
+        { name:"偷偷养生家", career:"M", family:"M", children:"M", health:"H", emoji:"🤫", quote:"《礼记》：君子慎独。你慎独吃保健品。", desc:"你表面普通，背地里维生素、鱼油、护肝片、益生菌从不落下。同事以为你佛系，其实你偷偷卷健康。你的家庭和睦，事业稳定，身体倍儿棒，但没人知道你悄悄努力的样子。调侃：你是养生界的‘扫地僧’，低调奢华有内涵。低调养生，高调生活，挺好，但别忘了偶尔分享你的养生秘籍。" },
+        { name:"病秧子卷王", career:"H", family:"M", children:"H", health:"L", emoji:"🤧", quote:"杜甫《蜀相》：出师未捷身先病，长使英雄泪满襟。", desc:"你事业强，孩子强，你加班、应酬、辅导作业，样样不落。但你的身体已经千疮百孔——颈椎病、胃溃疡、失眠、脱发，你活成了‘职场奋斗史’的反面教材。调侃：你的病历比你的简历还厚，你的药比你的饭还多。留得青山在，不怕没柴烧，先把身体养好，再去卷也不迟。" },
+        { name:"医院常客", career:"M", family:"M", children:"L", health:"L", emoji:"🏥", quote:"俗语：人吃五谷杂粮，哪有不生病的。你吃得有点多。", desc:"你和小病小痛是老朋友了，医院比家还熟。你每个月都要去报到，医保卡余额永远不够。你的事业被拖累，家庭被影响，孩子觉得你是‘玻璃人’。调侃：你是医院的VIP中P，护士都认识你了。小病是提醒，善待身体，别把小病拖成大病。" },
+        { name:"脆皮青年", career:"H", family:"L", children:"M", health:"L", emoji:"🥚", quote:"《道德经》：其脆易泮，其微易散。你就是那个脆的。", desc:"你年纪轻轻，一身毛病。外表光鲜亮丽，内里虚弱无力。你加班三天就感冒，应酬一顿就胃疼，跑步十分钟就喘。你的家庭被你忽略，你的身体被你透支。调侃：你是‘脆皮坦克’，看着能抗，一碰就碎。年轻不是挥霍的资本，身体才是革命的本钱，从今天开始养生吧。" },
+        { name:"钢铁侠", career:"H", family:"H", children:"H", health:"M", emoji:"🤖", quote:"俗语：金玉其外，败絮其中。你还没到败絮，但快了。", desc:"你看起来无所不能，事业家庭子女样样优秀，像一台永动机。但你的身体已经发出了警报——失眠、疲劳、偶尔心慌，你只是在硬撑。调侃：你是别人眼里的钢铁侠，只有自己知道盔甲下全是伤。钢铁也会生锈，休息一下，保养一下，你值得更好的自己。" },
+        { name:"药罐子", career:"L", family:"M", children:"M", health:"L", emoji:"💊", quote:"俗语：是药三分毒。你已经是九分毒了。", desc:"你每天离不开药，降压药、降糖药、安眠药、胃药，你的生活就是定时定点吃药。你的心态还行，觉得‘活着就行’。你的事业基本放弃，家庭还能维持，孩子还算懂事。调侃：你是行走的药房，你的口袋比药店还全。按时吃药是对自己负责，但也要努力改善生活方式，争取少吃药。" },
+        { name:"虚胖达人", career:"M", family:"L", children:"L", health:"L", emoji:"🍔", quote:"《黄帝内经》：肥贵人则膏粱之疾也。你吃太好了。", desc:"你的体重和你的压力成正比，你的腰围和你的加班时长同步增长。你试过减肥，但每次都败给奶茶和夜宵。你的家庭对你无语，你的健康已经报警。调侃：你是‘压力胖’的代言人，你的体重秤已经不认识你了。管住嘴迈开腿，从明天开始，不，从今天开始，哪怕只是少吃一口。" },
+        // 六、双高双低型（20种）
+        { name:"鸡血孤寡", career:"H", family:"L", children:"H", health:"L", emoji:"💔", quote:"《史记》：光宗耀祖，断子绝孙？太史公都没见过这种。", desc:"你的事业风生水起，孩子成绩名列前茅，但你的感情已经名存实亡，你的身体已经千疮百孔。你是别人眼里的成功人士，只有自己知道孤独的滋味。调侃：你的荣誉墙和你的感情裂痕一样多，你的存款和你的医药费成正比。荣誉是给别人看的，日子是自己过的，该放手时就放手。" },
+        { name:"田园居士", career:"L", family:"H", children:"L", health:"H", emoji:"🌾", quote:"陶渊明：采菊东篱下，悠然见南山。爱人孩子热炕头。", desc:"你的钱不多，但你的家庭和睦得像教科书，你的身体棒得像运动员。你不求大富大贵，只求一家人整整齐齐。你种花、养狗、做饭、散步，活成了朋友圈里的‘世外高人’。调侃：你是穷人版的‘人生赢家’，但幸福感吊打所有富豪。幸福和钱不成正比，你悟了，请继续保持。" },
+        { name:"末路英雄", career:"H", family:"H", children:"H", health:"L", emoji:"🩺", quote:"《史记》：飞鸟尽，良弓藏。你还没飞鸟尽，身体先藏了。", desc:"你的事业、家庭、子女全部优秀，你是别人眼里的人生赢家。但你的体检报告说：你离猝死只差一个加班。你的三高、脂肪肝、颈椎病，是你奋斗的勋章，也是你身体的墓志铭。调侃：你拿命换钱，再拿钱换命，算来算去，亏了。把健康从L拉到M，你就是真正的王，先活到退休再说。" },
+        { name:"赌徒家长", career:"L", family:"L", children:"H", health:"L", emoji:"🎲", quote:"《庄子》：以瓦注者巧，以黄金注者昏。你把孩子当黄金注了。", desc:"你把自己的人生全押在孩子身上，自己躺平，却要求孩子起飞。你的孩子压力山大，你的另一半怨声载道，你的身体被焦虑拖垮。调侃：你是‘育儿赌徒’，赌注是孩子的一生，赢了你是教育家，输了你是罪人。孩子不是你人生的续集，写好你自己的剧本，别让孩子替你演。" },
+        { name:"事业家庭双优", career:"H", family:"H", children:"M", health:"M", emoji:"🏆", quote:"《孟子》：鱼和熊掌兼得，累成狗也值。", desc:"你的事业和家庭两手抓，两手都硬。你是公司里的骨干，家里的顶梁柱。你的孩子中等偏上，你的身体还能扛。但你已经三年没睡过懒觉了，你的周末比工作日还忙。调侃：你是别人眼里的‘人生赢家’，你是自己眼里的‘累成狗’。你已经很棒了，偶尔偷懒不丢人，给自己放个假。" },
+        { name:"事业子女双优", career:"H", family:"M", children:"H", health:"M", emoji:"📚", quote:"《论语》：学而优则仕，仕而优则鸡娃。", desc:"你是别人眼中的超人，职场精英+学霸家长双buff。但你只有自己知道多累——白天开会晚上辅导作业，周末加班间隙送孩子上兴趣班。你的爱人抱怨你像台机器，你的身体在喊救命。调侃：超人也需要充电，你不是永动机。给自己放个假，地球离了你照样转，孩子离了你也照样学。" },
+        { name:"家庭健康双优", career:"M", family:"H", children:"M", health:"H", emoji:"🌿", quote:"《诗经》：妻子好合，如鼓瑟琴。兄弟既翕，和乐且耽。", desc:"你拥有最珍贵的两样东西：家和健康。你和爱人和睦如初，身体倍儿棒，孩子也算省心。事业嘛，够用就行。你是朋友圈里最低调的幸福范本。调侃：你不争不抢，但赢麻了。知足常乐，你已拥有最多，别被卷王带偏。" },
+        { name:"事业健康双优", career:"H", family:"M", children:"M", health:"H", emoji:"💪", quote:"俗语：身体好，工作好，就是缺个知心人。", desc:"你啥都好——事业蒸蒸日上，体检报告全绿，身材管理在线。但你的感情生活像一杯白开水，不冷不热，淡而无味。你的爱人觉得你更爱工作和健身房。调侃：你活成了‘优秀寡人’，啥都有就是没人陪。门开着，等对的人进来，或者主动走出去。" },
+        { name:"三好学生", career:"H", family:"H", children:"M", health:"H", emoji:"⭐", quote:"《礼记》：修身齐家治国平天下。你差个“齐子”。", desc:"你几乎完美——事业成功、家庭和睦、身体倍棒，唯独子女方面差点意思。孩子成绩中等、不够出挑，成了你心头的一根小刺。调侃：你的人生就差这一哆嗦，但九美已经很美了。人生哪有十全十美，接受不完美才是真完美。" },
+        { name:"躺平青年", career:"L", family:"M", children:"L", health:"L", emoji:"🛋️", quote:"《道德经》：为学日益，为道日损。你损得有点多。", desc:"你对生活的要求极低，有口饭吃就行。工作不挑、工资不争、孩子不鸡、健康不养。你是朋友眼里‘最想成为又不敢成为的人’。调侃：你的躺平姿势已经出神入化，但小心躺太久腰疼。躺平是一种选择，但别躺到后悔，偶尔起来伸个懒腰也不亏。" },
+        { name:"孤僻天才", career:"H", family:"L", children:"M", health:"L", emoji:"🎯", quote:"《论语》：人不知而不愠，不亦君子乎？你有点愠。", desc:"你业务能力一流，专业领域你是大神，但人际关系一塌糊涂。你的爱人觉得你冷漠，同事觉得你高冷，只有你知道你只是懒得社交。调侃：你的专业技能是你的铠甲，但也别丢了温度。专业是你的王牌，但人情味是你的加分项。" },
+        { name:"社交恐惧", career:"M", family:"L", children:"L", health:"H", emoji:"😷", quote:"陶渊明：久在樊笼里，复得返自然。你的自然就是宅家。", desc:"你害怕社交，喜欢独处，身体倍儿棒。你能推的饭局绝不参加，能线上解决绝不见面。你是宅家界的冠军，社恐界的楷模。调侃：你的社交圈只有快递和外卖小哥。社恐不是病，舒服就好，但偶尔出门晒太阳也不错。" },
+        { name:"工作机器", career:"H", family:"M", children:"L", health:"M", emoji:"🤖", quote:"《庄子》：其巧一也，而有所结。你就是那个被结住的。", desc:"你高效、精准，像一台精密仪器。工作从不出错，任务从不拖延，但你也从不让步。你的爱人说你没有温度，孩子说你像AI。调侃：机器也需要保养，何况是人。偶尔关机重启，做个有血有肉的人。" },
+        { name:"家庭第一", career:"M", family:"H", children:"L", health:"M", emoji:"🏠", quote:"《孟子》：天下之本在国，国之本在家。你是本。", desc:"你的一切选择都以家庭为先。升职？看会不会影响陪家人。出差？看孩子有没有课。你是家里的定海神针，是爱人的依靠，孩子的榜样。调侃：你是家庭的‘CEO’，全年无休的那种。家是你的铠甲，也是软肋，但别忘了你也需要被保护。" },
+        { name:"育儿至上", career:"L", family:"M", children:"H", health:"M", emoji:"👼", quote:"俗语：可怜天下父母心。你的心有点太可怜了。", desc:"你的生活围着孩子转。从早餐到作业，从兴趣班到夏令营，你的日历全是孩子的行程。你的爱人觉得你眼里只有娃，你自己也觉得有点过头了。调侃：你是‘育儿界的劳模’，但劳模也有累的时候。孩子终会长大，别忘了你自己。" },
+        { name:"养生达人", career:"M", family:"M", children:"L", health:"H", emoji:"🌱", quote:"《黄帝内经》：法于阴阳，和于术数。你深得其法。", desc:"你认为长寿是终极目标。你研究养生食谱、练习八段锦、追踪睡眠质量，你是朋友圈里的健康KOL。调侃：你是‘活得最久的那个’，但活得好也要活得热闹。活得久也要活得好，别把日子过成修行。" },
+        { name:"顾此失彼", career:"H", family:"L", children:"M", health:"L", emoji:"😵", quote:"《孟子》：鱼我所欲也，熊掌亦我所欲也。你只得了鱼。", desc:"你的事业蒸蒸日上，但其他都在走下坡。感情淡了、孩子远了、身体垮了，你像一辆只踩油门的车，其他零件全坏了。调侃：你的人生是单科状元，总分不及格。是时候给生活做减法了，事业不是全部。" },
+        { name:"佛系青年", career:"L", family:"M", children:"L", health:"M", emoji:"🙏", quote:"《金刚经》：应作如是观。你观得有点太开了。", desc:"你对什么都无所谓，随遇而安。工作不挑、工资不争、感情随缘、孩子放养。你是朋友眼里‘最佛的人’。调侃：你的佛系已经到了‘佛祖看了都摇头’的程度。佛系不是摆烂，是不强求，但该争取的还是要争取一下。" },
+        { name:"完美主义", career:"H", family:"M", children:"H", health:"H", emoji:"✨", quote:"《论语》：食不厌精，脍不厌细。你的人生也不厌精。", desc:"你追求完美，事事都要最好。工作要做到极致，孩子要上最好的学校，家里要一尘不染，身体要各项指标最优。你是朋友眼里的‘强迫症晚期’。调侃：你的完美是方向，不是终点，别把自己逼疯。完美是方向，不是终点，你已经够好了。" },
+        { name:"悲观主义者", career:"L", family:"L", children:"M", health:"L", emoji:"😔", quote:"杜甫：感时花溅泪，恨别鸟惊心。你天天溅泪。", desc:"你总看到生活的阴暗面。工作没希望、感情没意思、孩子不省心、身体不给力。你是朋友眼里的‘负能量发射器’。调侃：你的世界是灰色的，但偶尔也有彩虹。换个角度，阳光一直都在，只是你忘了抬头。" },
+        // 七、特殊混合型（9种）
+        { name:"孤勇者", career:"H", family:"L", children:"M", health:"H", emoji:"🦸", quote:"屈原：路漫漫其修远兮，吾将上下而求索。一个人也行。", desc:"你一个人扛起所有，坚强得让人心疼。事业你拼、健康你管、孩子你带，你的另一半基本缺席。你是朋友圈里的‘单亲超人’。调侃：你是超级英雄，但超级英雄也有片酬，你呢？零片酬。你值得被看见，也值得被爱，别总是一个人扛。" },
+        { name:"家庭支柱", career:"M", family:"H", children:"M", health:"L", emoji:"🪨", quote:"《诗经》：如山如阜，如冈如陵。你是全家的山。", desc:"你是家里的顶梁柱，不能倒下。全家都靠你撑着——父母看病你陪、孩子学费你出、房贷车贷你还。你的身体已经报警，但你不敢停。调侃：你是全家的‘ATM机+搬运工+心理咨询师’，工资却只拿一份。支柱也需要支撑，照顾好自己，别等塌了才后悔。" },
+        { name:"育儿焦虑症", career:"M", family:"L", children:"H", health:"L", emoji:"😫", quote:"《诗经》：未见君子，忧心忡忡。你天天见孩子也忡忡。", desc:"你为孩子操碎了心，觉都睡不好。成绩、交友、健康、兴趣班，你每天都在担心。你的另一半觉得你过度紧张，你自己也知道有点过头。调侃：你是‘焦虑界的顶流’，你的头发和你的操心程度成反比。相信孩子，也相信自己，你已经做得很好了。" },
+        { name:"养生贵族", career:"L", family:"M", children:"L", health:"H", emoji:"👑🌿", quote:"《黄帝内经》：其知道者，法于阴阳。你知道，且有钱。", desc:"你吃最贵的补品，过最闲的日子。你的保健品比你的饭还多，你的养生器材比你的衣服还贵。你是朋友圈里的‘养生界爱马仕’。调侃：你是‘精致穷’的反面——精致富，但别精致到孤独。精致没错，别精致到没朋友就行。" },
+        { name:"职场隐士", career:"M", family:"L", children:"M", health:"H", emoji:"🥷", quote:"陶渊明：结庐在人境，而无车马喧。你在职场也这样。", desc:"你默默工作，默默养生，不争不抢。你是公司里的‘隐形人’，但你的身体是你最大的炫耀资本。调侃：你是‘闷声发大财’的代言人，顺便养了个生。闷声发大财，顺便养个生，这波不亏。" },
+        { name:"家庭隐痛", career:"H", family:"M", children:"L", health:"L", emoji:"😢", quote:"《红楼梦》：外头看着轰轰烈烈，内里却已千疮百孔。", desc:"你外人看着成功——事业有成、家庭完整，但只有你知道家里一地鸡毛。你和爱人的关系冷淡，孩子和你疏远，你的身体也在抗议。调侃：你是‘假面人生’的主角，笑容背后全是泪。成功的定义不该只有事业，家才是最后的退路。" },
+        { name:"育儿狂魔", career:"L", family:"L", children:"H", health:"M", emoji:"🔥👶", quote:"《孟子》：幼吾幼以及人之幼。你只幼吾幼，且过度。", desc:"你的世界只有孩子，其他都是背景。工作？能混就行。感情？随缘吧。健康？孩子好就行。你是朋友圈里的‘育儿疯批’。调侃：你是孩子的‘专属奴隶’，但奴隶也有翻身日。孩子重要，你也很重要，别把自己活没了。" },
+        { name:"健康破产", career:"H", family:"H", children:"M", health:"L", emoji:"💸🩺", quote:"俗语：有什么别有病，没什么别没钱。你两样都占了。", desc:"你拼命赚钱，然后拼命看病。你的工资卡和医保卡是连体婴儿，进账出账无缝衔接。调侃：你是医院的‘年度VIP客户’，你的病历比你的年终总结还厚。赚得多不如花得少，健康才是真省钱，别等躺病床上才想明白。" },
+        { name:"人间清醒", career:"M", family:"M", children:"L", health:"M", emoji:"🧠", quote:"《道德经》：知人者智，自知者明。你明，但不动。", desc:"你什么都明白——知道该养生、该陪家人、该拼事业，但你就是懒得动。你是朋友眼里的‘理论王者，行动青铜’。调侃：你是‘清醒的咸鱼’，啥都懂就是不动。清醒是好事，行动才是解药，别等老了才后悔。" }
+    ];
+
+    // 全局变量
+    let shuffledQuestions = [];
+    let userAnswers = [];
+    let currentIndex = 0;
+    let currentTheme = "deep";
+
+    function setTheme(theme) {
+        const isLight = theme === "light";
+        document.body.classList.toggle("theme-light", isLight);
+        const btn = document.getElementById("themeToggleBtn");
+        if (btn) {
+            btn.innerText = isLight ? "切换到深色版" : "切换到浅色版";
+        }
+        currentTheme = isLight ? "light" : "deep";
+        localStorage.setItem("quizTheme", currentTheme);
+    }
+
+    function initTheme() {
+        const savedTheme = localStorage.getItem("quizTheme");
+        setTheme(savedTheme === "light" ? "light" : "deep");
+        const toggleBtn = document.getElementById("themeToggleBtn");
+        if (toggleBtn) {
+            toggleBtn.addEventListener("click", () => {
+                setTheme(currentTheme === "light" ? "deep" : "light");
+            });
+        }
+    }
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function initQuiz() {
+        document.getElementById("coverPanel").style.display = "none";
+        document.getElementById("quizHeader").style.display = "block";
+        shuffledQuestions = shuffleArray(
+            questionsData.map(q => ({
+                ...q,
+                options: shuffleArray([...q.options])
+            }))
+        );
+        userAnswers = new Array(shuffledQuestions.length).fill(null);
+        currentIndex = 0;
+        document.getElementById("quizPanel").style.display = "block";
+        document.getElementById("resultPanel").style.display = "none";
+        document.getElementById("submitBtn").style.display = "none";
+        document.getElementById("nextBtn").style.display = "flex";
+        document.getElementById("prevBtn").style.display = "flex";
+        renderQuestion();
+        updateProgress();
+    }
+
+    function renderQuestion() {
+        const q = shuffledQuestions[currentIndex];
+        document.getElementById("questionText").innerText = q.text;
+        const optsDiv = document.getElementById("optionsContainer");
+        optsDiv.innerHTML = "";
+        q.options.forEach((opt, idx) => {
+            const optDiv = document.createElement("div");
+            optDiv.className = "option";
+            const stored = userAnswers[currentIndex];
+            if (stored && stored.score === opt.score && stored.text === opt.text) {
+                optDiv.classList.add("selected");
+            }
+            const prefix = String.fromCharCode(65+idx);
+            optDiv.innerHTML = `<span class="option-prefix">${prefix}.</span><span>${opt.text}</span>`;
+            optDiv.onclick = () => {
+                userAnswers[currentIndex] = { score: opt.score, dim: q.dim, text: opt.text };
+                renderQuestion();
+                updateProgress();
+            };
+            optsDiv.appendChild(optDiv);
+        });
+        document.getElementById("qCounter").innerText = `第${currentIndex+1} / ${shuffledQuestions.length}题`;
+        if (currentIndex === shuffledQuestions.length-1) {
+            document.getElementById("nextBtn").style.display = "none";
+            document.getElementById("submitBtn").style.display = "block";
+        } else {
+            document.getElementById("nextBtn").style.display = "flex";
+            document.getElementById("submitBtn").style.display = "none";
+        }
+    }
+
+    function updateProgress() {
+        let answered = userAnswers.filter(a => a !== null).length;
+        let percent = (answered / shuffledQuestions.length) * 100;
+        document.getElementById("progressBar").style.width = percent + "%";
+    }
+
+    function nextQuestion() {
+        if (userAnswers[currentIndex] === null) {
+            alert("请先选择一个选项～");
+            return;
+        }
+        if (currentIndex < shuffledQuestions.length-1) {
+            currentIndex++;
+            renderQuestion();
+        }
+    }
+
+    function prevQuestion() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            renderQuestion();
+        }
+    }
+
+    function computeResult() {
+        for (let i = 0; i < userAnswers.length; i++) {
+            if (userAnswers[i] === null) {
+                alert("请完成所有题目");
+                return;
+            }
+        }
+        let scores = { career:0, family:0, children:0, health:0 };
+        let maxScores = { career:14, family:14, children:16, health:16 };
+        for (let i = 0; i < shuffledQuestions.length; i++) {
+            const q = shuffledQuestions[i];
+            const ans = userAnswers[i];
+            if (ans && ans.dim) scores[ans.dim] += ans.score;
+        }
+        const getLevelByDimension = (dim, score) => {
+            // 缩小 M 区间，让结果更容易分化
+            if (dim === "career" || dim === "family") {
+                if (score <= 6) return "L";
+                if (score >= 8) return "H";
+                return "M"; // 6-8
+            }
+            if (dim === "children" || dim === "health") {
+                if (score <= 6) return "L";
+                if (score >= 9) return "H";
+                return "M"; // 6-9
+            }
+            return "M";
+        };
+        const userVec = {
+            career: getLevelByDimension("career", scores.career),
+            family: getLevelByDimension("family", scores.family),
+            children: getLevelByDimension("children", scores.children),
+            health: getLevelByDimension("health", scores.health)
+        };
+        const mapVal = { "H":2, "M":1, "L":0 };
+        const userNum = [mapVal[userVec.career], mapVal[userVec.family], mapVal[userVec.children], mapVal[userVec.health]];
+        let bestMatch = null;
+        let bestDist = Infinity;
+        for (let p of personalityList) {
+            const pNum = [mapVal[p.career], mapVal[p.family], mapVal[p.children], mapVal[p.health]];
+            const dist = Math.abs(userNum[0]-pNum[0]) + Math.abs(userNum[1]-pNum[1]) + Math.abs(userNum[2]-pNum[2]) + Math.abs(userNum[3]-pNum[3]);
+            if (dist < bestDist) {
+                bestDist = dist;
+                bestMatch = p;
+            }
+        }
+        const maxPossibleDist = 8;
+        const matchPercent = (1 - bestDist / maxPossibleDist) * 100;
+        if (matchPercent < 60) {
+            // 兜底傻乐者
+            const sillyResult = {
+                name: "傻乐者",
+                emoji: "😄",
+                quote: "标准人格库对你的脑回路集体罢工了！",
+                desc: "你的答案过于清奇，四大维度自成宇宙。人生嘛，傻乐也是顶级智慧！"
+            };
+            showFinalResult(sillyResult, userVec, scores);
+        } else {
+            showFinalResult(bestMatch, userVec, scores);
+        }
+    }
+
+    function showFinalResult(person, userVec, rawScores) {
+        const html = `
+            <div class="result-box">
+                <div class="result-main">
+                    <div class="personality-emoji">${person.emoji}</div>
+                    <div class="result-name">「${person.name}」</div>
+                    <div class="result-quote">✍️ ${person.quote}</div>
+                    <div class="result-desc">${person.desc}</div>
+                    <div class="dimension-scores">
+                        <span>🏢 事业:${userVec.career} (${rawScores.career}分)</span>
+                        <span>🏠 家庭:${userVec.family} (${rawScores.family}分)</span>
+                        <span>📚 子女:${userVec.children} (${rawScores.children}分)</span>
+                        <span>❤️ 健康:${userVec.health} (${rawScores.health}分)</span>
+                    </div>
+                    <div class="result-actions-guide">
+                        <div><strong>1）截图分享：</strong>把这页结果截图发给朋友，让大家一眼看到你的“四大作品人格”。</div>
+                        <div><strong>2）再测一次：</strong>本测试共${personalityList.length}种人格，不妨再做一遍，看看能不能解锁你的隐藏新人格。</div>
+                    </div>
+                    <button class="restart-btn" onclick="location.reload()">🔄 重新测试 🔄</button>
+                </div>
+            </div>
+        `;
+        document.getElementById("quizPanel").style.display = "none";
+        document.getElementById("resultPanel").innerHTML = html;
+        document.getElementById("resultPanel").style.display = "block";
+    }
+
+    initTheme();
+    document.getElementById("startBtn").addEventListener("click", initQuiz);
+    document.getElementById("nextBtn").addEventListener("click", nextQuestion);
+    document.getElementById("prevBtn").addEventListener("click", prevQuestion);
+    document.getElementById("submitBtn").addEventListener("click", computeResult);
+</script>
+</body>
+</html>
