@@ -362,6 +362,52 @@
             color: var(--btn-text);
             border: 1px solid var(--container-border);
         }
+        .share-card-btn.loading {
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
+        .share-loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 5, 14, 0.52);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 18px;
+        }
+        .share-loading-box {
+            min-width: 250px;
+            max-width: 340px;
+            border-radius: 18px;
+            border: 1px solid var(--container-border);
+            background: var(--container-bg);
+            color: var(--text-main);
+            text-align: center;
+            padding: 18px 16px;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+        }
+        .share-loading-spinner {
+            width: 30px;
+            height: 30px;
+            border-radius: 999px;
+            border: 3px solid rgba(255,255,255,0.18);
+            border-top-color: var(--progress-fill);
+            margin: 0 auto 10px;
+            animation: shareSpin 0.9s linear infinite;
+        }
+        .share-loading-title {
+            font-size: 0.98rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .share-loading-sub {
+            font-size: 0.86rem;
+            color: var(--sub-color);
+        }
+        @keyframes shareSpin {
+            to { transform: rotate(360deg); }
+        }
         .result-actions-guide {
             margin-top: 14px;
             text-align: left;
@@ -729,6 +775,7 @@
     let currentTheme = "deep";
     let latestResultSnapshot = null;
     let lastShareCardDataUrl = "";
+    let shareLoadingTimer = null;
     const soundFx = {
         ctx: null,
         isUnlocked: false
@@ -999,11 +1046,11 @@
                         <span>❤️ 健康:${userVec.health} (${finalScores.health}/10)</span>
                     </div>
                     <div class="result-actions-guide">
-                        <div><strong>1）截图分享：</strong>把这页结果截图发给朋友，让大家一眼看到你的“四大作品人格”。</div>
-                        <div><strong>2）再测一次：</strong>本测试共${personalityList.length}种人格，不妨再做一遍，看看能不能解锁你的隐藏新人格。</div>
+                    
+                        <div></strong>本测试共${personalityList.length}种人格，不妨再做一遍，看看能不能解锁你的隐藏新人格。</div>
                     </div>
-                    <button id="shareCardBtn" class="share-card-btn">🖼️ 一键生成分享卡片</button>
-                    <button class="restart-btn" onclick="location.reload()">🔄 重新测试 🔄</button>
+                    <button id="shareCardBtn" class="share-card-btn">一键生成分享卡片</button>
+                    <button class="restart-btn" onclick="location.reload()">重新测试</button>
                 </div>
             </div>
         `;
@@ -1104,6 +1151,58 @@
         wrap.innerHTML = `<a id="shareManualDownloadLink" href="${dataUrl}" download="${filename}" style="display:inline-block;padding:10px 16px;border-radius:999px;border:1px solid var(--container-border);background:var(--btn-bg);color:var(--btn-text);text-decoration:none;font-weight:600;">⬇️ 点这里下载分享卡片</a>`;
     }
 
+    function ensureShareLoadingOverlay() {
+        let overlay = document.getElementById("shareLoadingOverlay");
+        if (overlay) return overlay;
+        overlay = document.createElement("div");
+        overlay.id = "shareLoadingOverlay";
+        overlay.className = "share-loading-overlay";
+        overlay.innerHTML = `
+            <div class="share-loading-box">
+                <div class="share-loading-spinner"></div>
+                <div class="share-loading-title">正在生成分享卡片...</div>
+                <div class="share-loading-sub" id="shareLoadingSub">预计还需 12 秒</div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        return overlay;
+    }
+
+    function setShareButtonState(isLoading) {
+        const btn = document.getElementById("shareCardBtn");
+        if (!btn) return;
+        btn.disabled = isLoading;
+        btn.classList.toggle("loading", isLoading);
+        btn.innerText = isLoading ? "⏳ 生成中..." : "🖼️ 一键生成分享卡片";
+    }
+
+    function showShareLoading(seconds = 12) {
+        const overlay = ensureShareLoadingOverlay();
+        const sub = overlay.querySelector("#shareLoadingSub");
+        let remain = seconds;
+        overlay.style.display = "flex";
+        if (sub) sub.innerText = `预计还需 ${remain} 秒`;
+        if (shareLoadingTimer) clearInterval(shareLoadingTimer);
+        shareLoadingTimer = setInterval(() => {
+            remain -= 1;
+            if (!sub) return;
+            if (remain > 0) {
+                sub.innerText = `预计还需 ${remain} 秒`;
+            } else {
+                sub.innerText = "处理中，请稍候...";
+            }
+        }, 1000);
+    }
+
+    function hideShareLoading() {
+        const overlay = document.getElementById("shareLoadingOverlay");
+        if (overlay) overlay.style.display = "none";
+        if (shareLoadingTimer) {
+            clearInterval(shareLoadingTimer);
+            shareLoadingTimer = null;
+        }
+    }
+
     function drawRadarChart(ctx, centerX, centerY, radius, scores, labels, palette) {
         const levels = 5;
         const axisCount = labels.length;
@@ -1122,7 +1221,7 @@
             }
             ctx.closePath();
             ctx.strokeStyle = palette.grid;
-            ctx.lineWidth = 1.4;
+            ctx.lineWidth = 1;
             ctx.stroke();
         }
 
@@ -1134,7 +1233,7 @@
             ctx.moveTo(centerX, centerY);
             ctx.lineTo(x, y);
             ctx.strokeStyle = palette.grid;
-            ctx.lineWidth = 1.2;
+            ctx.lineWidth = 0.9;
             ctx.stroke();
         }
 
@@ -1150,12 +1249,24 @@
         ctx.closePath();
         ctx.fillStyle = palette.dataFill;
         ctx.strokeStyle = palette.dataStroke;
-        ctx.lineWidth = 4;
+        ctx.lineWidth = 2.4;
         ctx.fill();
         ctx.stroke();
 
+        // 顶点小圆点：让雷达图更精致但不过分抢眼
+        for (let i = 0; i < axisCount; i++) {
+            const angle = startAngle + i * angleStep;
+            const normalized = Math.max(0, Math.min(10, scores[i])) / 10;
+            const x = centerX + Math.cos(angle) * radius * normalized;
+            const y = centerY + Math.sin(angle) * radius * normalized;
+            ctx.beginPath();
+            ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+            ctx.fillStyle = palette.dataStroke;
+            ctx.fill();
+        }
+
         ctx.fillStyle = palette.text;
-        ctx.font = "32px 'Microsoft YaHei', sans-serif";
+        ctx.font = "30px 'Microsoft YaHei', sans-serif";
         for (let i = 0; i < axisCount; i++) {
             const angle = startAngle + i * angleStep;
             const x = centerX + Math.cos(angle) * (radius + 52);
@@ -1168,149 +1279,160 @@
 
     async function downloadShareCard() {
         if (!latestResultSnapshot) return;
+        const { person, userVec, finalScores } = latestResultSnapshot;
+        const safeName = (person.name || "我的人格结果").replace(/[\\/:*?"<>|]/g, "_");
+        const filename = `${safeName}-分享卡.png`;
+        setShareButtonState(true);
+        showShareLoading(12);
         try {
-            const { person, userVec, finalScores } = latestResultSnapshot;
             const canvas = document.createElement("canvas");
             canvas.width = 1080;
             canvas.height = 1920;
             const ctx = canvas.getContext("2d");
-            if (!ctx) {
-                alert("当前浏览器不支持卡片生成功能");
-                return;
-            }
+            if (!ctx) throw new Error("Canvas不可用");
 
             const isLight = currentTheme === "light";
             const palette = isLight
-                ? { bg1: "#f4edff", bg2: "#ffffff", card: "#f8f2ff", border: "#d9c8ff", text: "#2e2148", sub: "#6d5a96", accent: "#7c3aed", panel: "#ffffff", grid: "#d6c8f4", dataFill: "rgba(124,58,237,0.22)", dataStroke: "#7c3aed" }
-                : { bg1: "#0b0614", bg2: "#1a1030", card: "#20133a", border: "#4a2f7e", text: "#eee9ff", sub: "#c8b8f2", accent: "#9f7cff", panel: "#281a45", grid: "#4f3b78", dataFill: "rgba(159,124,255,0.24)", dataStroke: "#a78bfa" };
+                ? { bg1: "#f4edff", bg2: "#ffffff", card: "#f8f2ff", border: "#d9c8ff", text: "#2e2148", sub: "#6d5a96", accent: "#7c3aed", panel: "#ffffff", grid: "rgba(124,58,237,0.16)", dataFill: "rgba(124,58,237,0.14)", dataStroke: "rgba(124,58,237,0.82)" }
+                : { bg1: "#0b0614", bg2: "#1a1030", card: "#20133a", border: "#4a2f7e", text: "#eee9ff", sub: "#c8b8f2", accent: "#9f7cff", panel: "#281a45", grid: "rgba(167,139,250,0.20)", dataFill: "rgba(167,139,250,0.15)", dataStroke: "rgba(199,177,255,0.92)" };
 
+            const personalUrl = new URL("./个人战略二维码.png", window.location.href).href;
+            const quizUrl = new URL("./人生四大作品测试二维码.png", window.location.href).href;
             const [personalQrResult, quizQrResult] = await Promise.allSettled([
-                loadImage("./个人战略二维码.png"),
-                loadImage("./人生四大作品测试二维码.png")
+                loadImage(personalUrl),
+                loadImage(quizUrl)
             ]);
             const personalQr = personalQrResult.status === "fulfilled" ? personalQrResult.value : null;
             const quizQr = quizQrResult.status === "fulfilled" ? quizQrResult.value : null;
 
-        const bg = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-        bg.addColorStop(0, palette.bg1);
-        bg.addColorStop(1, palette.bg2);
-        ctx.fillStyle = bg;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const bg = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            bg.addColorStop(0, palette.bg1);
+            bg.addColorStop(1, palette.bg2);
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        drawRoundedRect(ctx, 48, 70, 984, 1780, 48);
-        ctx.fillStyle = palette.card;
-        ctx.fill();
-        ctx.lineWidth = 2.5;
-        ctx.strokeStyle = palette.border;
-        ctx.stroke();
+            drawRoundedRect(ctx, 48, 70, 984, 1780, 48);
+            ctx.fillStyle = palette.card;
+            ctx.fill();
+            ctx.lineWidth = 2.5;
+            ctx.strokeStyle = palette.border;
+            ctx.stroke();
 
-        const leftX = 90;
-        const leftY = 120;
-        const leftW = 650;
-        const leftH = 1680;
-        const rightX = 770;
-        const rightY = 120;
-        const rightW = 250;
-        const rightH = 1680;
-        const centerX = leftX + leftW / 2;
+            const cardX = 48;
+            const cardY = 70;
+            const cardW = 984;
+            const cardH = 1780;
+            // 主内容区仍居中，但稍向左给右侧二维码留空间
+            const centerX = 430;
 
-        drawRoundedRect(ctx, leftX, leftY, leftW, leftH, 34);
-        ctx.fillStyle = palette.panel;
-        ctx.fill();
-        ctx.strokeStyle = palette.border;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        drawRoundedRect(ctx, rightX, rightY, rightW, rightH, 34);
-        ctx.fillStyle = palette.panel;
-        ctx.fill();
-        ctx.strokeStyle = palette.border;
-        ctx.stroke();
-
-        ctx.textAlign = "center";
-        ctx.textBaseline = "alphabetic";
-        ctx.fillStyle = palette.text;
-        ctx.font = "84px 'Segoe UI Emoji', 'Microsoft YaHei', sans-serif";
-        ctx.fillText(person.emoji || "✨", centerX, 280);
-
-        ctx.font = "bold 64px 'Microsoft YaHei', sans-serif";
-        ctx.fillText(`「${person.name}」`, centerX, 370);
-
-        ctx.fillStyle = palette.sub;
-        ctx.font = "36px 'Microsoft YaHei', sans-serif";
-        drawCenteredWrappedText(ctx, person.quote || "", centerX, 450, 540, 52, 3);
-
-        const radarScores = [finalScores.career, finalScores.family, finalScores.children, finalScores.health];
-        drawRadarChart(ctx, centerX, 980, 220, radarScores, ["事业", "家庭", "子女", "健康"], palette);
-
-        ctx.fillStyle = palette.text;
-        ctx.font = "32px 'Microsoft YaHei', sans-serif";
-        ctx.fillText(`事业 ${userVec.career} (${finalScores.career}/10)`, centerX, 1300);
-        ctx.fillText(`家庭 ${userVec.family} (${finalScores.family}/10)`, centerX, 1350);
-        ctx.fillText(`子女 ${userVec.children} (${finalScores.children}/10)`, centerX, 1400);
-        ctx.fillText(`健康 ${userVec.health} (${finalScores.health}/10)`, centerX, 1450);
-
-        ctx.fillStyle = palette.sub;
-        ctx.font = "28px 'Microsoft YaHei', sans-serif";
-        drawCenteredWrappedText(ctx, person.desc || "", centerX, 1515, 540, 44, 4);
-
-        const qrSize = 180;
-        const qrX = rightX + (rightW - qrSize) / 2;
-        const topQrY = 310;
-        const bottomQrY = 1260;
-        const drawQrBlock = (img, y, title) => {
-            ctx.fillStyle = palette.text;
-            ctx.font = "bold 28px 'Microsoft YaHei', sans-serif";
-            ctx.textAlign = "center";
-            ctx.fillText(title, rightX + rightW / 2, y - 36);
-            drawRoundedRect(ctx, qrX - 10, y - 10, qrSize + 20, qrSize + 20, 20);
-            ctx.fillStyle = "#ffffff";
+            drawRoundedRect(ctx, 90, 120, 840, 1680, 34);
+            ctx.fillStyle = palette.panel;
             ctx.fill();
             ctx.strokeStyle = palette.border;
             ctx.lineWidth = 2;
             ctx.stroke();
-            if (img) {
-                ctx.drawImage(img, qrX, y, qrSize, qrSize);
-            } else {
-                ctx.fillStyle = palette.sub;
-                ctx.font = "22px 'Microsoft YaHei', sans-serif";
-                ctx.fillText("二维码缺失", rightX + rightW / 2, y + qrSize / 2 + 8);
+
+            ctx.textAlign = "center";
+            ctx.textBaseline = "alphabetic";
+            ctx.fillStyle = palette.text;
+            ctx.font = "84px 'Segoe UI Emoji', 'Microsoft YaHei', sans-serif";
+            ctx.fillText(person.emoji || "✨", centerX, 280);
+            ctx.font = "bold 64px 'Microsoft YaHei', sans-serif";
+            ctx.fillText(`「${person.name}」`, centerX, 370);
+            ctx.fillStyle = palette.sub;
+            ctx.font = "36px 'Microsoft YaHei', sans-serif";
+            drawCenteredWrappedText(ctx, person.quote || "", centerX, 450, 540, 52, 3);
+
+            const radarScores = [finalScores.career, finalScores.family, finalScores.children, finalScores.health];
+            drawRadarChart(ctx, centerX, 980, 212, radarScores, ["事业", "家庭", "子女", "健康"], palette);
+
+            ctx.fillStyle = palette.sub;
+            ctx.font = "28px 'Microsoft YaHei', sans-serif";
+            drawCenteredWrappedText(ctx, person.desc || "", centerX, 1335, 540, 44, 4);
+
+            const qrSize = 138;
+            const qrX = cardX + cardW - qrSize - 44;
+            const drawQrBlock = (img, y, title) => {
+                ctx.fillStyle = palette.text;
+                ctx.font = "bold 22px 'Microsoft YaHei', sans-serif";
+                ctx.fillText(title, qrX + qrSize / 2, y - 30);
+                drawRoundedRect(ctx, qrX - 10, y - 10, qrSize + 20, qrSize + 20, 20);
+                ctx.fillStyle = "#ffffff";
+                ctx.fill();
+                ctx.strokeStyle = palette.border;
+                ctx.lineWidth = 1.6;
+                ctx.stroke();
+                if (img) {
+                    ctx.drawImage(img, qrX, y, qrSize, qrSize);
+                } else {
+                    ctx.fillStyle = palette.sub;
+                    ctx.font = "18px 'Microsoft YaHei', sans-serif";
+                    ctx.fillText("二维码缺失", qrX + qrSize / 2, y + qrSize / 2 + 8);
+                }
+            };
+            drawQrBlock(personalQr, cardY + 250, "个人战略");
+            drawQrBlock(quizQr, cardY + cardH - qrSize - 250, "四大作品测试");
+
+            ctx.fillStyle = palette.accent;
+            ctx.font = "bold 32px 'Microsoft YaHei', sans-serif";
+            ctx.fillText("人生四大作品 · 人格分享卡", centerX, 1728);
+            ctx.fillStyle = palette.sub;
+            ctx.font = "24px 'Microsoft YaHei', sans-serif";
+            ctx.fillText(`生成时间：${new Date().toLocaleString()}`, centerX, 1770);
+
+            let dataUrl = "";
+            try {
+                dataUrl = canvas.toDataURL("image/png");
+            } catch (e) {
+                // file:// 下二维码可能污染画布，降级无二维码版，保证可导出
+                const backup = document.createElement("canvas");
+                backup.width = 1080;
+                backup.height = 1920;
+                const bctx = backup.getContext("2d");
+                if (!bctx) throw e;
+                bctx.fillStyle = "#0b0614";
+                bctx.fillRect(0, 0, backup.width, backup.height);
+                bctx.fillStyle = "#eee9ff";
+                bctx.textAlign = "center";
+                bctx.font = "84px 'Segoe UI Emoji', 'Microsoft YaHei', sans-serif";
+                bctx.fillText(person.emoji || "✨", 540, 320);
+                bctx.font = "bold 64px 'Microsoft YaHei', sans-serif";
+                bctx.fillText(`「${person.name}」`, 540, 430);
+                bctx.fillStyle = "#c8b8f2";
+                bctx.font = "36px 'Microsoft YaHei', sans-serif";
+                drawCenteredWrappedText(bctx, person.quote || "", 540, 520, 820, 52, 3);
+                bctx.fillStyle = "#eee9ff";
+                bctx.font = "36px 'Microsoft YaHei', sans-serif";
+                bctx.fillText(`事业 ${userVec.career} (${finalScores.career}/10)`, 540, 980);
+                bctx.fillText(`家庭 ${userVec.family} (${finalScores.family}/10)`, 540, 1040);
+                bctx.fillText(`子女 ${userVec.children} (${finalScores.children}/10)`, 540, 1100);
+                bctx.fillText(`健康 ${userVec.health} (${finalScores.health}/10)`, 540, 1160);
+                bctx.fillStyle = "#9f7cff";
+                bctx.font = "30px 'Microsoft YaHei', sans-serif";
+                bctx.fillText("已切换无二维码版（浏览器限制）", 540, 1760);
+                dataUrl = backup.toDataURL("image/png");
+                alert("当前电脑端受浏览器限制，已自动生成无二维码版分享卡。");
             }
-        };
 
-        drawQrBlock(personalQr, topQrY, "个人战略");
-        drawQrBlock(quizQr, bottomQrY, "四大作品测试");
-
-        ctx.fillStyle = palette.accent;
-        ctx.font = "bold 32px 'Microsoft YaHei', sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText("人生四大作品 · 人格分享卡", centerX, 1728);
-        ctx.fillStyle = palette.sub;
-        ctx.font = "24px 'Microsoft YaHei', sans-serif";
-        ctx.fillText(`生成时间：${new Date().toLocaleString()}`, centerX, 1770);
-
-            const safeName = (person.name || "我的人格结果").replace(/[\\/:*?"<>|]/g, "_");
-            const filename = `${safeName}-分享卡.png`;
-            const dataUrl = canvas.toDataURL("image/png");
             lastShareCardDataUrl = dataUrl;
-
             const link = document.createElement("a");
             link.download = filename;
             link.href = dataUrl;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-
-            // 浏览器若拦截自动下载，提供手动下载兜底入口
             showManualDownloadLink(filename, dataUrl);
         } catch (err) {
             console.error("生成分享卡片失败：", err);
             if (lastShareCardDataUrl) {
-                showManualDownloadLink("我的人格分享卡.png", lastShareCardDataUrl);
-                alert("自动下载可能被浏览器拦截，已为你提供手动下载按钮。");
+                showManualDownloadLink(filename, lastShareCardDataUrl);
+                alert("自动下载可能被浏览器拦截，已提供手动下载按钮。");
             } else {
-                alert("生成分享卡片失败，请刷新页面后重试。");
+                alert("生成分享卡片失败，请先用浏览器通过本地服务打开页面再试。");
             }
+        } finally {
+            hideShareLoading();
+            setShareButtonState(false);
         }
     }
 
