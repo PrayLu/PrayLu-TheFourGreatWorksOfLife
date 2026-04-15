@@ -1104,24 +1104,26 @@
         });
     }
 
-    function drawCenteredWrappedText(ctx, text, centerX, y, maxWidth, lineHeight, maxLines) {
+    function drawCenteredWrappedText(ctx, text, centerX, y, maxWidth, lineHeight, maxLines = 3, withEllipsis = true) {
         const chars = Array.from(text || "");
         const lines = [];
         let line = "";
+        const lineLimit = Number.isFinite(maxLines) ? maxLines : Number.MAX_SAFE_INTEGER;
         for (let i = 0; i < chars.length; i++) {
             const test = line + chars[i];
             if (ctx.measureText(test).width > maxWidth && line) {
                 lines.push(line);
                 line = chars[i];
-                if (lines.length === maxLines - 1) break;
+                if (lines.length === lineLimit - 1) break;
             } else {
                 line = test;
             }
         }
-        if (lines.length < maxLines && line) lines.push(line);
-        if (lines.length === maxLines && chars.length > lines.join("").length) {
-            const last = lines[maxLines - 1];
-            lines[maxLines - 1] = last.slice(0, Math.max(last.length - 1, 0)) + "…";
+        if (lines.length < lineLimit && line) lines.push(line);
+        if (withEllipsis && lines.length === lineLimit && chars.length > lines.join("").length) {
+            const lastIdx = lineLimit - 1;
+            const last = lines[lastIdx];
+            lines[lastIdx] = last.slice(0, Math.max(last.length - 1, 0)) + "…";
         }
         lines.forEach((lineText, idx) => {
             ctx.fillText(lineText, centerX, y + idx * lineHeight);
@@ -1293,8 +1295,8 @@
 
             const isLight = currentTheme === "light";
             const palette = isLight
-                ? { bg1: "#f4edff", bg2: "#ffffff", card: "#f8f2ff", border: "#d9c8ff", text: "#2e2148", sub: "#6d5a96", accent: "#7c3aed", panel: "#ffffff", grid: "rgba(124,58,237,0.16)", dataFill: "rgba(124,58,237,0.14)", dataStroke: "rgba(124,58,237,0.82)" }
-                : { bg1: "#0b0614", bg2: "#1a1030", card: "#20133a", border: "#4a2f7e", text: "#eee9ff", sub: "#c8b8f2", accent: "#9f7cff", panel: "#281a45", grid: "rgba(167,139,250,0.20)", dataFill: "rgba(167,139,250,0.15)", dataStroke: "rgba(199,177,255,0.92)" };
+                ? { bg1: "#efe4ff", bg2: "#d9c2ff", card: "#f7f1ff", border: "#d4b8ff", text: "#2f2350", sub: "#6d5a96", accent: "#7c3aed", panel: "#ffffff", grid: "rgba(124,58,237,0.16)", dataFill: "rgba(124,58,237,0.14)", dataStroke: "rgba(124,58,237,0.82)" }
+                : { bg1: "#2a1247", bg2: "#120a22", card: "#20133a", border: "#6d4aa8", text: "#eee9ff", sub: "#c8b8f2", accent: "#b08bff", panel: "#2b1848", grid: "rgba(188,158,255,0.24)", dataFill: "rgba(183,149,255,0.18)", dataStroke: "rgba(216,194,255,0.95)" };
 
             const personalUrl = new URL("./个人战略二维码.png", window.location.href).href;
             const quizUrl = new URL("./人生四大作品测试二维码.png", window.location.href).href;
@@ -1322,10 +1324,9 @@
             const cardY = 70;
             const cardW = 984;
             const cardH = 1780;
-            // 主内容区仍居中，但稍向左给右侧二维码留空间
-            const centerX = 430;
+            const centerX = 540;
 
-            drawRoundedRect(ctx, 90, 120, 840, 1680, 34);
+            drawRoundedRect(ctx, 86, 118, 908, 1548, 34);
             ctx.fillStyle = palette.panel;
             ctx.fill();
             ctx.strokeStyle = palette.border;
@@ -1341,44 +1342,50 @@
             ctx.fillText(`「${person.name}」`, centerX, 370);
             ctx.fillStyle = palette.sub;
             ctx.font = "36px 'Microsoft YaHei', sans-serif";
-            drawCenteredWrappedText(ctx, person.quote || "", centerX, 450, 540, 52, 3);
+            drawCenteredWrappedText(ctx, person.quote || "", centerX, 450, 720, 50, 2, true);
 
             const radarScores = [finalScores.career, finalScores.family, finalScores.children, finalScores.health];
-            drawRadarChart(ctx, centerX, 980, 212, radarScores, ["事业", "家庭", "子女", "健康"], palette);
+            drawRadarChart(ctx, centerX, 900, 220, radarScores, ["事业", "家庭", "子女", "健康"], palette);
 
             ctx.fillStyle = palette.sub;
-            ctx.font = "28px 'Microsoft YaHei', sans-serif";
-            drawCenteredWrappedText(ctx, person.desc || "", centerX, 1335, 540, 44, 4);
+            ctx.font = "24px 'Microsoft YaHei', sans-serif";
+            drawCenteredWrappedText(ctx, person.desc || "", centerX, 1230, 780, 36, 10, false);
 
-            const qrSize = 138;
-            const qrX = cardX + cardW - qrSize - 44;
-            const drawQrBlock = (img, y, title) => {
-                ctx.fillStyle = palette.text;
-                ctx.font = "bold 22px 'Microsoft YaHei', sans-serif";
-                ctx.fillText(title, qrX + qrSize / 2, y - 30);
-                drawRoundedRect(ctx, qrX - 10, y - 10, qrSize + 20, qrSize + 20, 20);
+            ctx.fillStyle = palette.accent;
+            ctx.font = "bold 34px 'Microsoft YaHei', sans-serif";
+            ctx.fillText("人生四大作品 · 人格分享卡", centerX, 1642);
+            ctx.fillStyle = palette.sub;
+            ctx.font = "24px 'Microsoft YaHei', sans-serif";
+            ctx.fillText(`生成时间：${new Date().toLocaleString()}`, centerX, 1682);
+
+            const qrSize = 126;
+            const leftQrX = 220;
+            const rightQrX = 1080 - 220 - qrSize;
+            const qrY = 1708;
+            const drawQrBlock = (img, x, title) => {
+                ctx.fillStyle = palette.sub;
+                ctx.font = "20px 'Microsoft YaHei', sans-serif";
+                ctx.fillText(title, x + qrSize / 2, qrY - 20);
+                drawRoundedRect(ctx, x - 8, qrY - 8, qrSize + 16, qrSize + 16, 18);
+                ctx.shadowColor = "rgba(0,0,0,0.08)";
+                ctx.shadowBlur = 10;
+                drawRoundedRect(ctx, x - 8, qrY - 8, qrSize + 16, qrSize + 16, 18);
                 ctx.fillStyle = "#ffffff";
                 ctx.fill();
+                ctx.shadowBlur = 0;
                 ctx.strokeStyle = palette.border;
                 ctx.lineWidth = 1.6;
                 ctx.stroke();
                 if (img) {
-                    ctx.drawImage(img, qrX, y, qrSize, qrSize);
+                    ctx.drawImage(img, x, qrY, qrSize, qrSize);
                 } else {
                     ctx.fillStyle = palette.sub;
                     ctx.font = "18px 'Microsoft YaHei', sans-serif";
-                    ctx.fillText("二维码缺失", qrX + qrSize / 2, y + qrSize / 2 + 8);
+                    ctx.fillText("二维码缺失", x + qrSize / 2, qrY + qrSize / 2 + 8);
                 }
             };
-            drawQrBlock(personalQr, cardY + 250, "个人战略");
-            drawQrBlock(quizQr, cardY + cardH - qrSize - 250, "四大作品测试");
-
-            ctx.fillStyle = palette.accent;
-            ctx.font = "bold 32px 'Microsoft YaHei', sans-serif";
-            ctx.fillText("人生四大作品 · 人格分享卡", centerX, 1728);
-            ctx.fillStyle = palette.sub;
-            ctx.font = "24px 'Microsoft YaHei', sans-serif";
-            ctx.fillText(`生成时间：${new Date().toLocaleString()}`, centerX, 1770);
+            drawQrBlock(personalQr, leftQrX, "个人战略");
+            drawQrBlock(quizQr, rightQrX, "四大作品测试");
 
             let dataUrl = "";
             try {
