@@ -1130,15 +1130,6 @@
         });
     }
 
-    function loadImage(src) {
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = () => resolve(img);
-            img.onerror = reject;
-            img.src = src;
-        });
-    }
-
     function showManualDownloadLink(filename, dataUrl) {
         const panel = document.getElementById("resultPanel");
         if (!panel) return;
@@ -1205,6 +1196,15 @@
         }
     }
 
+    function loadImage(src) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.onerror = () => reject(new Error(`图片加载失败: ${src}`));
+            img.src = src;
+        });
+    }
+
     function drawRadarChart(ctx, centerX, centerY, radius, scores, labels, palette) {
         const levels = 5;
         const axisCount = labels.length;
@@ -1268,7 +1268,8 @@
         }
 
         ctx.fillStyle = palette.text;
-        ctx.font = "30px 'Microsoft YaHei', sans-serif";
+        const radarLabelSize = palette.radarLabelSize || 30;
+        ctx.font = `${radarLabelSize}px 'Microsoft YaHei', sans-serif`;
         for (let i = 0; i < axisCount; i++) {
             const angle = startAngle + i * angleStep;
             const x = centerX + Math.cos(angle) * (radius + 52);
@@ -1281,145 +1282,85 @@
 
     async function downloadShareCard() {
         if (!latestResultSnapshot) return;
-        const { person, userVec, finalScores } = latestResultSnapshot;
+        const { person, finalScores } = latestResultSnapshot;
         const safeName = (person.name || "我的人格结果").replace(/[\\/:*?"<>|]/g, "_");
         const filename = `${safeName}-分享卡.png`;
         setShareButtonState(true);
-        showShareLoading(12);
+        showShareLoading(4);
         try {
+            const templateUrl = new URL("./分享页（小体积）.jpg", window.location.href).href;
+            const templateImg = await loadImage(templateUrl);
             const canvas = document.createElement("canvas");
-            canvas.width = 1080;
-            canvas.height = 1920;
+            canvas.width = templateImg.naturalWidth || templateImg.width;
+            canvas.height = templateImg.naturalHeight || templateImg.height;
             const ctx = canvas.getContext("2d");
             if (!ctx) throw new Error("Canvas不可用");
 
-            const isLight = currentTheme === "light";
-            const palette = isLight
-                ? { bg1: "#efe4ff", bg2: "#d9c2ff", card: "#f7f1ff", border: "#d4b8ff", text: "#2f2350", sub: "#6d5a96", accent: "#7c3aed", panel: "#ffffff", grid: "rgba(124,58,237,0.16)", dataFill: "rgba(124,58,237,0.14)", dataStroke: "rgba(124,58,237,0.82)" }
-                : { bg1: "#2a1247", bg2: "#120a22", card: "#20133a", border: "#6d4aa8", text: "#eee9ff", sub: "#c8b8f2", accent: "#b08bff", panel: "#2b1848", grid: "rgba(188,158,255,0.24)", dataFill: "rgba(183,149,255,0.18)", dataStroke: "rgba(216,194,255,0.95)" };
+            const baseW = 466;
+            const baseH = 1000;
+            const sx = canvas.width / baseW;
+            const sy = canvas.height / baseH;
+            const scale = Math.min(sx, sy);
+            const centerX = 233 * sx;
 
-            const personalUrl = new URL("./个人战略二维码.png", window.location.href).href;
-            const quizUrl = new URL("./人生四大作品测试二维码.png", window.location.href).href;
-            const [personalQrResult, quizQrResult] = await Promise.allSettled([
-                loadImage(personalUrl),
-                loadImage(quizUrl)
-            ]);
-            const personalQr = personalQrResult.status === "fulfilled" ? personalQrResult.value : null;
-            const quizQr = quizQrResult.status === "fulfilled" ? quizQrResult.value : null;
+            const palette = {
+                text: "#2d2a67",
+                sub: "#5d5a94",
+                accent: "#5f49d2",
+                grid: "rgba(123,95,224,0.20)",
+                dataFill: "rgba(145,121,235,0.20)",
+                dataStroke: "rgba(118,90,220,0.92)",
+                radarLabelSize: Math.round(18 * scale)
+            };
 
-            const bg = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-            bg.addColorStop(0, palette.bg1);
-            bg.addColorStop(1, palette.bg2);
-            ctx.fillStyle = bg;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            drawRoundedRect(ctx, 48, 70, 984, 1780, 48);
-            ctx.fillStyle = palette.card;
-            ctx.fill();
-            ctx.lineWidth = 2.5;
-            ctx.strokeStyle = palette.border;
-            ctx.stroke();
-
-            const cardX = 48;
-            const cardY = 70;
-            const cardW = 984;
-            const cardH = 1780;
-            const centerX = 540;
-
-            drawRoundedRect(ctx, 86, 118, 908, 1548, 34);
-            ctx.fillStyle = palette.panel;
-            ctx.fill();
-            ctx.strokeStyle = palette.border;
-            ctx.lineWidth = 2;
-            ctx.stroke();
+            // 1) 先画模板底图
+            ctx.drawImage(templateImg, 0, 0, canvas.width, canvas.height);
 
             ctx.textAlign = "center";
             ctx.textBaseline = "alphabetic";
+            // emoji 圆形底座
+            const emojiY = 195 * sy;
+            const emojiR = 30 * scale;
+            ctx.beginPath();
+            ctx.arc(centerX, emojiY - 16 * scale, emojiR, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(255,255,255,0.88)";
+            ctx.fill();
+            ctx.strokeStyle = "rgba(108,86,186,0.28)";
+            ctx.lineWidth = Math.max(1, 1.5 * scale);
+            ctx.stroke();
+
             ctx.fillStyle = palette.text;
-            ctx.font = "84px 'Segoe UI Emoji', 'Microsoft YaHei', sans-serif";
-            ctx.fillText(person.emoji || "✨", centerX, 280);
-            ctx.font = "bold 64px 'Microsoft YaHei', sans-serif";
-            ctx.fillText(`「${person.name}」`, centerX, 370);
+            ctx.font = `${Math.round(42 * scale)}px 'Segoe UI Emoji', 'Microsoft YaHei', sans-serif`;
+            ctx.fillText(person.emoji || "✨", centerX, emojiY);
+            ctx.font = `bold ${Math.round(48 * scale)}px 'Microsoft YaHei', sans-serif`;
+            ctx.fillText(`「${person.name}」`, centerX, 258 * sy);
             ctx.fillStyle = palette.sub;
-            ctx.font = "36px 'Microsoft YaHei', sans-serif";
-            drawCenteredWrappedText(ctx, person.quote || "", centerX, 450, 720, 50, 2, true);
+            ctx.font = `${Math.round(26 * scale)}px 'Microsoft YaHei', sans-serif`;
+            drawCenteredWrappedText(ctx, person.quote || "", centerX, 306 * sy, 380 * sx, 34 * sy, 4, false);
 
             const radarScores = [finalScores.career, finalScores.family, finalScores.children, finalScores.health];
-            drawRadarChart(ctx, centerX, 900, 220, radarScores, ["事业", "家庭", "子女", "健康"], palette);
+            drawRadarChart(
+                ctx,
+                centerX,
+                520 * sy,
+                105 * scale,
+                radarScores,
+                ["事业", "家庭", "子女", "健康"],
+                palette
+            );
 
             ctx.fillStyle = palette.sub;
-            ctx.font = "24px 'Microsoft YaHei', sans-serif";
-            drawCenteredWrappedText(ctx, person.desc || "", centerX, 1230, 780, 36, 10, false);
+            ctx.font = `${Math.round(22 * scale)}px 'Microsoft YaHei', sans-serif`;
+            drawCenteredWrappedText(ctx, person.desc || "", centerX, 675 * sy, 360 * sx, 33 * sy, 6, true);
 
             ctx.fillStyle = palette.accent;
-            ctx.font = "bold 34px 'Microsoft YaHei', sans-serif";
-            ctx.fillText("人生四大作品 · 人格分享卡", centerX, 1642);
+            ctx.font = `bold ${Math.round(30 * scale)}px 'Microsoft YaHei', sans-serif`;
+            ctx.fillText("人生四大作品 · 人格分享卡", centerX, 868 * sy);
             ctx.fillStyle = palette.sub;
-            ctx.font = "24px 'Microsoft YaHei', sans-serif";
-            ctx.fillText(`生成时间：${new Date().toLocaleString()}`, centerX, 1682);
+            ctx.font = `${Math.round(20 * scale)}px 'Microsoft YaHei', sans-serif`;
+            ctx.fillText(`生成时间：${new Date().toLocaleString()}`, centerX, 900 * sy);
 
-            const qrSize = 126;
-            const leftQrX = 220;
-            const rightQrX = 1080 - 220 - qrSize;
-            const qrY = 1708;
-            const drawQrBlock = (img, x, title) => {
-                ctx.fillStyle = palette.sub;
-                ctx.font = "20px 'Microsoft YaHei', sans-serif";
-                ctx.fillText(title, x + qrSize / 2, qrY - 20);
-                drawRoundedRect(ctx, x - 8, qrY - 8, qrSize + 16, qrSize + 16, 18);
-                ctx.shadowColor = "rgba(0,0,0,0.08)";
-                ctx.shadowBlur = 10;
-                drawRoundedRect(ctx, x - 8, qrY - 8, qrSize + 16, qrSize + 16, 18);
-                ctx.fillStyle = "#ffffff";
-                ctx.fill();
-                ctx.shadowBlur = 0;
-                ctx.strokeStyle = palette.border;
-                ctx.lineWidth = 1.6;
-                ctx.stroke();
-                if (img) {
-                    ctx.drawImage(img, x, qrY, qrSize, qrSize);
-                } else {
-                    ctx.fillStyle = palette.sub;
-                    ctx.font = "18px 'Microsoft YaHei', sans-serif";
-                    ctx.fillText("二维码缺失", x + qrSize / 2, qrY + qrSize / 2 + 8);
-                }
-            };
-            drawQrBlock(personalQr, leftQrX, "个人战略");
-            drawQrBlock(quizQr, rightQrX, "四大作品测试");
-
-            let dataUrl = "";
-            try {
-                dataUrl = canvas.toDataURL("image/png");
-            } catch (e) {
-                // file:// 下二维码可能污染画布，降级无二维码版，保证可导出
-                const backup = document.createElement("canvas");
-                backup.width = 1080;
-                backup.height = 1920;
-                const bctx = backup.getContext("2d");
-                if (!bctx) throw e;
-                bctx.fillStyle = "#0b0614";
-                bctx.fillRect(0, 0, backup.width, backup.height);
-                bctx.fillStyle = "#eee9ff";
-                bctx.textAlign = "center";
-                bctx.font = "84px 'Segoe UI Emoji', 'Microsoft YaHei', sans-serif";
-                bctx.fillText(person.emoji || "✨", 540, 320);
-                bctx.font = "bold 64px 'Microsoft YaHei', sans-serif";
-                bctx.fillText(`「${person.name}」`, 540, 430);
-                bctx.fillStyle = "#c8b8f2";
-                bctx.font = "36px 'Microsoft YaHei', sans-serif";
-                drawCenteredWrappedText(bctx, person.quote || "", 540, 520, 820, 52, 3);
-                bctx.fillStyle = "#eee9ff";
-                bctx.font = "36px 'Microsoft YaHei', sans-serif";
-                bctx.fillText(`事业 ${userVec.career} (${finalScores.career}/10)`, 540, 980);
-                bctx.fillText(`家庭 ${userVec.family} (${finalScores.family}/10)`, 540, 1040);
-                bctx.fillText(`子女 ${userVec.children} (${finalScores.children}/10)`, 540, 1100);
-                bctx.fillText(`健康 ${userVec.health} (${finalScores.health}/10)`, 540, 1160);
-                bctx.fillStyle = "#9f7cff";
-                bctx.font = "30px 'Microsoft YaHei', sans-serif";
-                bctx.fillText("已切换无二维码版（浏览器限制）", 540, 1760);
-                dataUrl = backup.toDataURL("image/png");
-                alert("当前电脑端受浏览器限制，已自动生成无二维码版分享卡。");
-            }
+            const dataUrl = canvas.toDataURL("image/png");
 
             lastShareCardDataUrl = dataUrl;
             const link = document.createElement("a");
