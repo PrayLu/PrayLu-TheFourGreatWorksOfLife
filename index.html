@@ -1319,7 +1319,7 @@
             ctx.textAlign = "center";
             ctx.textBaseline = "alphabetic";
             // emoji 圆形底座
-            const emojiY = 250 * sy;
+            const emojiY = 264 * sy;
             const emojiR = 30 * scale;
             ctx.beginPath();
             ctx.arc(centerX, emojiY - 16 * scale, emojiR, 0, Math.PI * 2);
@@ -1332,7 +1332,7 @@
             ctx.fillStyle = palette.text;
             ctx.font = `${Math.round(42 * scale)}px 'Segoe UI Emoji', 'Microsoft YaHei', sans-serif`;
             ctx.fillText(person.emoji || "✨", centerX, emojiY);
-            ctx.font = `bold ${Math.round(48 * scale)}px 'Microsoft YaHei', sans-serif`;
+            ctx.font = `bold ${Math.round(42 * scale)}px 'Microsoft YaHei', sans-serif`;
             ctx.fillText(`「${person.name}」`, centerX, 330 * sy);
             ctx.fillStyle = palette.sub;
             ctx.font = `${Math.round(24 * scale)}px 'Microsoft YaHei', sans-serif`;
@@ -1343,22 +1343,19 @@
                 ctx,
                 centerX,
                 540 * sy,
-                98 * scale,
+                92 * scale,
                 radarScores,
                 ["事业", "家庭", "子女", "健康"],
                 palette
             );
 
             ctx.fillStyle = palette.sub;
-            ctx.font = `${Math.round(16 * scale)}px 'Microsoft YaHei', sans-serif`;
-            drawCenteredWrappedText(ctx, person.desc || "", centerX, 650 * sy, 388 * sx, 24 * sy, 8, false);
+            ctx.font = `${Math.round(15 * scale)}px 'Microsoft YaHei', sans-serif`;
+            drawCenteredWrappedText(ctx, person.desc || "", centerX, 650 * sy, 388 * sx, 22 * sy, 9, false);
 
-            ctx.fillStyle = palette.accent;
-            ctx.font = `bold ${Math.round(24 * scale)}px 'Microsoft YaHei', sans-serif`;
-            ctx.fillText("人生四大作品 · 人格分享卡", centerX, 804 * sy);
             ctx.fillStyle = palette.sub;
             ctx.font = `${Math.round(15 * scale)}px 'Microsoft YaHei', sans-serif`;
-            ctx.fillText(`生成时间：${new Date().toLocaleString()}`, centerX, 830 * sy);
+            ctx.fillText(`生成时间：${new Date().toLocaleString()}`, centerX, 812 * sy);
 
             const dataUrl = canvas.toDataURL("image/png");
 
