@@ -642,7 +642,7 @@
     const questionsData = [
   // 事业 7题
   { text: "周一早上闹钟响了，你第一反应是？", options: [{text:"立刻起床，从容洗漱出门",score:2},{text:"按掉闹钟再眯5分钟，然后加速出门",score:1},{text:"设个15分钟后的闹钟，再眯一会儿",score:1},{text:"醒来先刷几分钟手机，再慢慢起",score:0}], dim:"career" },
-    { text: "领导在群里发了一个60秒语音方阵，你会？", options: [{text:"逐条听完，确认重点后回复",score:2},{text:"转文字快速浏览，抓住关键信息",score:2},{text:"先标记未读，忙完手头事再听",score:1},{text:"听个大概，回复'收到'后继续手头工作",score:1}], dim:"career" },
+    { text: "领导在群里发了一个60秒语音方阵，你会？", options: [{text:"逐条听完，确认重点后回复",score:2},{text:"转文字快速浏览，抓住关键信息",score:1},{text:"先标记未读，忙完手头事再听",score:1},{text:"听个大概，回复'收到'后继续手头工作",score:0}], dim:"career" },
     { text: "开会时你突然放了个屁，声音不大但旁边人都听到了，你会？", options: [{text:"面不改色，继续讲PPT",score:2},{text:"假装咳嗽两声掩盖",score:1},{text:"稍微停顿一下，然后正常继续",score:1},{text:"自嘲一句'不好意思'，然后继续",score:0}], dim:"career" },
     { text: "公司团建要爬山，你的真实想法是？", options: [{text:"挺期待的，正好活动活动",score:2},{text:"去就去吧，就当放松一下",score:1},{text:"不太想去，但不好意思拒绝",score:0},{text:"去是去，但会选最省力的方式",score:1}], dim:"career" },
     { text: "如果多年后回头看，你最怕事业成功是靠什么换来的？", options: [{text:"怕错过家人的重要时刻",score:2},{text:"怕把自己活成工作机器",score:2},{text:"没想过太多，把眼前的事做完再说",score:0},{text:"我愿意为事业付出，但也在学着找平衡",score:1}], dim:"career" },
@@ -654,29 +654,29 @@
     { text: "周末你刚拖完地，伴侣穿着室外鞋踩进来，你会？", options: [{text:"忍住，自己默默再拖一遍",score:2},{text:"“你能不能注意点？”但语气还行",score:1},{text:"开玩笑说“这位同学，请换鞋”",score:1},{text:"叹口气，让他/她自己处理",score:0}], dim:"family" },
     { text: "如果现在给父母打电话，你最怕听到哪句话？", options: [{text:"“没事，你忙你的，我们都挺好”",score:2},{text:"“你不用总惦记，家里还能扛”",score:1},{text:"“你什么时候有空再说吧”",score:0},{text:"“算了，不麻烦你了”",score:0}], dim:"family" },
     { text: "过年回谁家这个问题，你家的解决方案是？", options: [{text:"轮流，今年你家明年我家",score:2},{text:"各回各家，各找各妈",score:1},{text:"谁家都不回，出去旅游",score:1},{text:"把两边老人接到一起过",score:2}], dim:"family" },
-    { text: "伴侣打呼噜震天响，你睡不着，你会？", options: [{text:"轻轻推一下，让他换个姿势",score:2},{text:"戴上耳塞，忍了",score:1},{text:"去客厅睡沙发",score:0},{text:"第二天开玩笑提起，商量怎么办",score:2}], dim:"family" },
-    { text: "你们吵架后，谁先低头？", options: [{text:"我，因为懒得冷战",score:2},{text:"对方，因为我比较倔",score:0},{text:"看情况，谁错谁认",score:1},{text:"不低头，用外卖点对方爱吃的东西当台阶",score:2}], dim:"family" },
+    { text: "伴侣打呼噜震天响，你睡不着，你会？", options: [{text:"轻轻推一下，让他换个姿势",score:2},{text:"戴上耳塞，忍了",score:1},{text:"去客厅睡沙发",score:0},{text:"第二天开玩笑提起，商量怎么办",score:1}], dim:"family" },
+    { text: "你们吵架后，谁先低头？", options: [{text:"我，因为懒得冷战",score:2},{text:"对方，因为我比较倔",score:0},{text:"看情况，谁错谁认",score:1},{text:"不低头，用外卖点对方爱吃的东西当台阶",score:1}], dim:"family" },
     { text: "父母在家庭群里说“有空常回家吃饭”，你通常会？", options: [{text:"马上约时间，回去陪他们",score:2},{text:"先答应，找时间安排一下",score:1},{text:"先已读，等忙完再说",score:0},{text:"说“好的”，然后尽量安排",score:1}], dim:"family" },
     
     // 子女 8题
     { text: "孩子问你“我从哪里来的”，你的回答是？", options: [{text:"科学解释：妈妈肚子里长大的",score:2},{text:"“爸爸妈妈很相爱，就有了你”",score:2},{text:"“等你长大就知道了”",score:1},{text:"反问“你觉得呢？”然后一起聊",score:1}], dim:"children" },
-    { text: "孩子考试考了95分，但全班平均分96，你会？", options: [{text:"先肯定成绩，再说“下次再细心一点会更好”",score:2},{text:"和孩子一起看看错在哪，下次怎么避免",score:2},{text:"觉得95分已经很好了，不纠结那一分",score:0},{text:"问孩子自己怎么看，再一起商量怎么改进",score:1}], dim:"children" },
-    { text: "孩子当众大哭大闹要买玩具，你会？", options: [{text:"立刻买，别哭了",score:0},{text:"强行抱走，回家再说",score:1},{text:"蹲下来讲道理，等他冷静",score:2},{text:"先带离现场，再慢慢聊",score:2}], dim:"children" },
+    { text: "孩子考试考了95分，但全班平均分96，你会？", options: [{text:"先肯定成绩，再说“下次再细心一点会更好”",score:1},{text:"和孩子一起看看错在哪，下次怎么避免",score:2},{text:"觉得95分已经很好了，不纠结那一分",score:0},{text:"问孩子自己怎么看，再一起商量怎么改进",score:1}], dim:"children" },
+    { text: "孩子当众大哭大闹要买玩具，你会？", options: [{text:"立刻买，别哭了",score:0},{text:"强行抱走，回家再说",score:1},{text:"蹲下来讲道理，等他冷静",score:2},{text:"先带离现场，再慢慢聊",score:1}], dim:"children" },
     { text: "老师私聊你说“孩子最近上课走神”，你会？", options: [{text:"感谢老师，回家和孩子聊聊",score:2},{text:"先了解情况，再和孩子一起想办法",score:2},{text:"觉得老师多虑了，孩子平时挺认真的",score:0},{text:"问老师具体表现，再决定怎么处理",score:1}], dim:"children" },
     { text: "孩子说“我不想上学了”，你会？", options: [{text:"先问原因，再一起想办法解决",score:2},{text:"先安抚情绪，再慢慢引导",score:2},{text:"告诉孩子“上学是你现在该做的事”，但愿意听听他的想法",score:1},{text:"先让他休息一天，再找机会聊",score:1}], dim:"children" },
     { text: "别的家长在群里晒娃的奖状/才艺，你会？", options: [{text:"发个“👍”然后忽略",score:1},{text:"也找一张自己娃的奖状晒回去",score:0},{text:"私聊夸对方，但不发群里",score:2},{text:"点赞，然后继续做自己的事",score:1}], dim:"children" },
     { text: "孩子成年后，最可能对你说的话是什么？", options: [{text:"“你一直很爱我，只是那时你太忙了”",score:2},{text:"“你对我要求很高，所以我早早学会了自律”",score:1},{text:"“你替我规划得很周全，但我很晚才学会自己决定”",score:0},{text:"“你把最好的都给了我，但你自己活得很辛苦”",score:1}], dim:"children" },
-    { text: "孩子长大后，你不希望他/她记住你什么样子？", options: [{text:"记住我总在赶时间，却很少认真听他说话",score:2},{text:"记住我爱他，但多数时候只会催和管",score:1},{text:"记住我常常缺席，重要场合总是“下次一定”",score:0},{text:"记住我只在乎成绩，不在乎他的感受",score:0}], dim:"children" },
+    { text: "孩子长大后，你不希望他/她记住你什么样子？", options: [{text:"记住我总在赶时间，却很少认真听他说话",score:1},{text:"记住我爱他，但多数时候只会催和管",score:1},{text:"记住我常常缺席，重要场合总是“下次一定”",score:0},{text:"记住我只在乎成绩，不在乎他的感受",score:0}], dim:"children" },
     
     // 健康 8题
     { text: "如果哪天体检突然异常，你最怕自己来不及做什么？", options: [{text:"没陪够家人，很多话还没来得及说",score:2},{text:"很多承诺还没兑现，怕被现实打脸",score:1},{text:"先别想这些，等真出事再说",score:0},{text:"会有点慌，但会尽快去复查和调整",score:1}], dim:"health" },
     { text: "你现在的睡眠状态是？", options: [{text:"倒头就睡，雷打不动",score:2},{text:"能睡着，但半夜会醒",score:1},{text:"躺床上刷手机，刷到睁不开眼才睡",score:0},{text:"睡前会放松一下，但入睡时间不太固定",score:1}], dim:"health" },
     { text: "你运动的方式是？", options: [{text:"每周规律去健身房/跑步",score:2},{text:"周末偶尔动一下，平时不动的",score:1},{text:"日常多走路、多爬楼梯，算我的运动",score:1},{text:"基本不运动，能坐着不站着",score:0}], dim:"health" },
     { text: "你喝水的习惯是？", options: [{text:"每天8杯水，定时提醒",score:2},{text:"渴了才喝，有时一天不喝",score:0},{text:"白水喝得少，经常用饮料或咖啡代替",score:0},{text:"会提醒自己多喝水，但不太规律",score:1}], dim:"health" },
-    { text: "你吃保健品吗？", options: [{text:"每天按时吃，维生素鱼油护肝片一套",score:2},{text:"买了但经常忘吃",score:1},{text:"我对保健品效果持怀疑态度，所以很少吃",score:0},{text:"只吃“心理安慰型”，比如睡前喝枸杞水",score:1}], dim:"health" },
+    { text: "你对健康相关保险（如医疗/重疾）的准备更接近？", options: [{text:"保障配置比较完整，也会定期复盘",score:2},{text:"有基础保障，但很少主动优化",score:1},{text:"知道重要，但一直没认真规划",score:0},{text:"主要靠临时应对，暂时没做配置",score:0}], dim:"health" },
     { text: "你现在的身体状态，用一句话形容是？", options: [{text:"上五楼不带喘",score:2},{text:"上五楼喘一下",score:1},{text:"上五楼歇两次",score:0},{text:"日常更习惯坐电梯，走楼梯比较少",score:0}], dim:"health" },
     { text: "你熬夜之后，第二天怎么补救？", options: [{text:"通常不会特别补救，第二天作息也难调整",score:0},{text:"喝咖啡硬撑",score:1},{text:"中午补觉半小时",score:2},{text:"会调整作息，尽量早睡补回来",score:2}], dim:"health" },
-    { text: "这两年你最常忽视的身体信号是？", options: [{text:"明知不舒服也拖着，觉得再撑一下就好",score:2},{text:"偶尔会警觉，但很快又恢复老习惯",score:1},{text:"常常忽略身体信号，通常拖到明显不适才处理",score:0},{text:"有时会先扛着，等问题明显了再处理",score:0}], dim:"health" }
+    { text: "这两年你最常忽视的身体信号是？", options: [{text:"不舒服就及时调整并改变",score:2},{text:"偶尔会警觉，但很快又恢复老习惯",score:1},{text:"常常忽略身体信号，通常拖到明显不适才处理",score:0},{text:"有时会先扛着，等问题明显了再处理",score:0}], dim:"health" }
 ];
 
 
@@ -996,10 +996,10 @@
         };
         // 每个维度独立控制L/M/H区间（满分均为10）
         const levelRanges = {
-            career: { lMax: 4.9, hMin: 7.0 },
-            family: { lMax: 5.9, hMin: 8.0 },
-            children: { lMax: 5.9, hMin: 8.0 },
-            health: { lMax: 5.9, hMin: 9.0 }
+            career: { lMax: 6.9, hMin: 8.5 },
+            family: { lMax: 5.9, hMin: 8.5 },
+            children: { lMax: 5.9, hMin: 8.8 },
+            health: { lMax: 6.2, hMin: 8.8 }
         };
         const getLevelByScore = (dim, score) => {
             const cfg = levelRanges[dim];
