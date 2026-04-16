@@ -1138,15 +1138,17 @@
         if (!wrap) {
             wrap = document.createElement("div");
             wrap.id = "shareManualDownloadWrap";
-            wrap.style.marginTop = "10px";
+            wrap.style.marginTop = "12px";
             wrap.style.textAlign = "center";
             panel.appendChild(wrap);
         }
         wrap.innerHTML = `
+            <div style="margin-bottom:8px;font-size:0.9rem;font-weight:600;color:var(--question-color);">✅ 分享图已生成，请向下滑动查看卡片</div>
             <a id="shareManualDownloadLink" href="${dataUrl}" download="${filename}" style="display:inline-block;padding:10px 16px;border-radius:999px;border:1px solid var(--container-border);background:var(--btn-bg);color:var(--btn-text);text-decoration:none;font-weight:600;">⬇️ 点这里下载分享卡片</a>
             <div style="margin-top:10px;font-size:0.82rem;color:var(--sub-color);">手机端可长按下方图片保存</div>
             <img src="${dataUrl}" alt="分享卡片预览" style="display:block;width:100%;max-width:360px;margin:8px auto 0;border-radius:12px;border:1px solid var(--container-border);" />
         `;
+        wrap.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     function ensureShareLoadingOverlay() {
@@ -1387,21 +1389,9 @@
             const descLineHeight = 22 * sy;
             const descLines = drawCenteredWrappedText(ctx, person.desc || "", centerX, descStartY, 388 * sx, descLineHeight, 9, false);
 
-            ctx.fillStyle = palette.sub;
-            ctx.font = `${Math.round(15 * scale)}px 'Microsoft YaHei', sans-serif`;
-            const computedTimeY = descStartY + descLines * descLineHeight + 48 * sy;
-            const timeY = Math.min(844 * sy, computedTimeY);
-            ctx.fillText(`生成时间：${new Date().toLocaleString()}`, centerX, timeY);
-
             const dataUrl = canvas.toDataURL("image/png");
 
             lastShareCardDataUrl = dataUrl;
-            const link = document.createElement("a");
-            link.download = filename;
-            link.href = dataUrl;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
             showManualDownloadLink(filename, dataUrl);
         } catch (err) {
             console.error("生成分享卡片失败：", err);
