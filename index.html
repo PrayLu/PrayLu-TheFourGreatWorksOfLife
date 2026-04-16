@@ -1223,7 +1223,7 @@
             }
             ctx.closePath();
             ctx.strokeStyle = palette.grid;
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 1.2;
             ctx.stroke();
         }
 
@@ -1235,7 +1235,7 @@
             ctx.moveTo(centerX, centerY);
             ctx.lineTo(x, y);
             ctx.strokeStyle = palette.grid;
-            ctx.lineWidth = 0.9;
+            ctx.lineWidth = 1.05;
             ctx.stroke();
         }
 
@@ -1251,7 +1251,7 @@
         ctx.closePath();
         ctx.fillStyle = palette.dataFill;
         ctx.strokeStyle = palette.dataStroke;
-        ctx.lineWidth = 2.4;
+        ctx.lineWidth = 2.8;
         ctx.fill();
         ctx.stroke();
 
@@ -1307,7 +1307,7 @@
                 text: "#2d2a67",
                 sub: "#5d5a94",
                 accent: "#5f49d2",
-                grid: "rgba(123,95,224,0.20)",
+                grid: "rgba(123,95,224,0.28)",
                 dataFill: "rgba(145,121,235,0.20)",
                 dataStroke: "rgba(118,90,220,0.92)",
                 radarLabelSize: Math.round(18 * scale)
@@ -1319,7 +1319,7 @@
             ctx.textAlign = "center";
             ctx.textBaseline = "alphabetic";
             // emoji 圆形底座
-            const emojiY = 195 * sy;
+            const emojiY = 250 * sy;
             const emojiR = 30 * scale;
             ctx.beginPath();
             ctx.arc(centerX, emojiY - 16 * scale, emojiR, 0, Math.PI * 2);
@@ -1333,32 +1333,32 @@
             ctx.font = `${Math.round(42 * scale)}px 'Segoe UI Emoji', 'Microsoft YaHei', sans-serif`;
             ctx.fillText(person.emoji || "✨", centerX, emojiY);
             ctx.font = `bold ${Math.round(48 * scale)}px 'Microsoft YaHei', sans-serif`;
-            ctx.fillText(`「${person.name}」`, centerX, 258 * sy);
+            ctx.fillText(`「${person.name}」`, centerX, 330 * sy);
             ctx.fillStyle = palette.sub;
-            ctx.font = `${Math.round(26 * scale)}px 'Microsoft YaHei', sans-serif`;
-            drawCenteredWrappedText(ctx, person.quote || "", centerX, 306 * sy, 380 * sx, 34 * sy, 4, false);
+            ctx.font = `${Math.round(24 * scale)}px 'Microsoft YaHei', sans-serif`;
+            drawCenteredWrappedText(ctx, person.quote || "", centerX, 380 * sy, 380 * sx, 32 * sy, 4, false);
 
             const radarScores = [finalScores.career, finalScores.family, finalScores.children, finalScores.health];
             drawRadarChart(
                 ctx,
                 centerX,
-                520 * sy,
-                105 * scale,
+                540 * sy,
+                98 * scale,
                 radarScores,
                 ["事业", "家庭", "子女", "健康"],
                 palette
             );
 
             ctx.fillStyle = palette.sub;
-            ctx.font = `${Math.round(22 * scale)}px 'Microsoft YaHei', sans-serif`;
-            drawCenteredWrappedText(ctx, person.desc || "", centerX, 675 * sy, 360 * sx, 33 * sy, 6, true);
+            ctx.font = `${Math.round(16 * scale)}px 'Microsoft YaHei', sans-serif`;
+            drawCenteredWrappedText(ctx, person.desc || "", centerX, 650 * sy, 388 * sx, 24 * sy, 8, false);
 
             ctx.fillStyle = palette.accent;
-            ctx.font = `bold ${Math.round(30 * scale)}px 'Microsoft YaHei', sans-serif`;
-            ctx.fillText("人生四大作品 · 人格分享卡", centerX, 868 * sy);
+            ctx.font = `bold ${Math.round(24 * scale)}px 'Microsoft YaHei', sans-serif`;
+            ctx.fillText("人生四大作品 · 人格分享卡", centerX, 804 * sy);
             ctx.fillStyle = palette.sub;
-            ctx.font = `${Math.round(20 * scale)}px 'Microsoft YaHei', sans-serif`;
-            ctx.fillText(`生成时间：${new Date().toLocaleString()}`, centerX, 900 * sy);
+            ctx.font = `${Math.round(15 * scale)}px 'Microsoft YaHei', sans-serif`;
+            ctx.fillText(`生成时间：${new Date().toLocaleString()}`, centerX, 830 * sy);
 
             const dataUrl = canvas.toDataURL("image/png");
 
