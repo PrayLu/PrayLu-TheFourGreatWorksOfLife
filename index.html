@@ -1128,6 +1128,7 @@
         lines.forEach((lineText, idx) => {
             ctx.fillText(lineText, centerX, y + idx * lineHeight);
         });
+        return lines.length;
     }
 
     function showManualDownloadLink(filename, dataUrl) {
@@ -1302,6 +1303,7 @@
             const sy = canvas.height / baseH;
             const scale = Math.min(sx, sy);
             const centerX = 233 * sx;
+            const contentOffsetY = 18 * sy;
 
             const palette = {
                 text: "#2d2a67",
@@ -1319,13 +1321,13 @@
             ctx.textAlign = "center";
             ctx.textBaseline = "alphabetic";
             // emoji 圆形底座
-            const emojiY = 264 * sy;
+            const emojiY = 264 * sy + contentOffsetY;
             const emojiR = 30 * scale;
             ctx.beginPath();
             ctx.arc(centerX, emojiY - 16 * scale, emojiR, 0, Math.PI * 2);
-            ctx.fillStyle = "rgba(255,255,255,0.88)";
+            ctx.fillStyle = "rgba(122,94,224,0.20)";
             ctx.fill();
-            ctx.strokeStyle = "rgba(108,86,186,0.28)";
+            ctx.strokeStyle = "rgba(109,86,194,0.45)";
             ctx.lineWidth = Math.max(1, 1.5 * scale);
             ctx.stroke();
 
@@ -1333,16 +1335,16 @@
             ctx.font = `${Math.round(42 * scale)}px 'Segoe UI Emoji', 'Microsoft YaHei', sans-serif`;
             ctx.fillText(person.emoji || "✨", centerX, emojiY);
             ctx.font = `bold ${Math.round(42 * scale)}px 'Microsoft YaHei', sans-serif`;
-            ctx.fillText(`「${person.name}」`, centerX, 330 * sy);
+            ctx.fillText(`「${person.name}」`, centerX, 330 * sy + contentOffsetY);
             ctx.fillStyle = palette.sub;
-            ctx.font = `${Math.round(24 * scale)}px 'Microsoft YaHei', sans-serif`;
-            drawCenteredWrappedText(ctx, person.quote || "", centerX, 380 * sy, 380 * sx, 32 * sy, 4, false);
+            ctx.font = `${Math.round(22 * scale)}px 'Microsoft YaHei', sans-serif`;
+            drawCenteredWrappedText(ctx, person.quote || "", centerX, 380 * sy + contentOffsetY, 380 * sx, 32 * sy, 4, false);
 
             const radarScores = [finalScores.career, finalScores.family, finalScores.children, finalScores.health];
             drawRadarChart(
                 ctx,
                 centerX,
-                540 * sy,
+                540 * sy + contentOffsetY,
                 92 * scale,
                 radarScores,
                 ["事业", "家庭", "子女", "健康"],
@@ -1351,11 +1353,15 @@
 
             ctx.fillStyle = palette.sub;
             ctx.font = `${Math.round(15 * scale)}px 'Microsoft YaHei', sans-serif`;
-            drawCenteredWrappedText(ctx, person.desc || "", centerX, 650 * sy, 388 * sx, 22 * sy, 9, false);
+            const descStartY = 682 * sy + contentOffsetY;
+            const descLineHeight = 22 * sy;
+            const descLines = drawCenteredWrappedText(ctx, person.desc || "", centerX, descStartY, 388 * sx, descLineHeight, 9, false);
 
             ctx.fillStyle = palette.sub;
             ctx.font = `${Math.round(15 * scale)}px 'Microsoft YaHei', sans-serif`;
-            ctx.fillText(`生成时间：${new Date().toLocaleString()}`, centerX, 812 * sy);
+            const computedTimeY = descStartY + descLines * descLineHeight + 48 * sy;
+            const timeY = Math.min(844 * sy, computedTimeY);
+            ctx.fillText(`生成时间：${new Date().toLocaleString()}`, centerX, timeY);
 
             const dataUrl = canvas.toDataURL("image/png");
 
